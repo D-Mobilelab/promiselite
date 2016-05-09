@@ -7,7 +7,7 @@ var promiseStatus = {
 var Promise = function(executor){
 
     // executor called at the end of the definition of Promise
-    if (typeof executor !== 'function' && typeof executor !== 'function'){
+    if (typeof executor !== 'undefined' && typeof executor !== 'function'){
         throw 'BarneyPromise :: executor must be a function, got ' + typeof executor;
     }
     
@@ -146,7 +146,7 @@ var Promise = function(executor){
         return promiseInstance.then(undefined, onError);
     }
 
-    if (typeof executor !== 'undefined'){
+    if (typeof executor === 'function'){
         try {
             executor(promiseInstance.resolve, promiseInstance.reject);
         } catch (err){
