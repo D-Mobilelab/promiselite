@@ -1,10 +1,4 @@
-var promiseStatus = {
-    0: 'pending',
-    1: 'fulfilled',
-    2: 'rejected'
-}
-
-var Promise = function(executor){
+var BarneyPromise = function(executor, nextProm){
 
     // executor called at the end of the definition of Promise
     if (typeof executor !== 'undefined' && typeof executor !== 'function'){
@@ -15,12 +9,47 @@ var Promise = function(executor){
     var promiseStatusIndex = 0;
     var promiseValue;
     var promiseReason;
-    var next;
+    var next, lastNext;
+
+    if (nextProm){
+        next = nextProm;
+    }
+
+    var promiseStatus = {
+        0: 'pending',
+        1: 'fulfilled',
+        2: 'rejected'
+    }
+
+    this.printNext = function(){
+
+        var printNode = function(node){
+            if (typeof node === 'undefined'){
+                return undefined
+            }
+            return {
+                next: printNode(node.next),
+                onSuccess: node.onSuccess && node.onSuccess.toString(),
+                onError: node.onError && node.onError.toString(),
+                value: node.getValue ? node.getValue(): 'MISSING',
+                reason: node.getReason ? node.getReason() : 'MISSING'
+            }
+        }
+
+        return printNode(next);
+    }
 
     var NOOP = function(){};
+    var PASS = function(arg){
+        return arg;
+    }
 
     this.getValue = function(){
         return promiseValue;
+    }
+
+    this.getParent = function(){
+        return parent;
     }
 
     this.getReason = function(){
@@ -57,22 +86,18 @@ var Promise = function(executor){
             success = NOOP;
         }
         if (typeof error === 'undefined'){
-            error = NOOP;
+            error = PASS;
         }
 
-        return (function(){
-            return new Promise(function(res, rej){
+        var nextToAdd = (typeof next === 'undefined') ? undefined : next;
+
+        return new BarneyPromise(function(res, rej){
                 try {
                     res(success(getValue()));
                 } catch (err){
                     rej(error(err));
                 }
-            });
-
-            if (next){
-                toReturn.then(next.onSuccess, next.onError, next.next, next.getValue);
-            }
-        })();
+            }, nextToAdd);
 
     }
 
@@ -83,18 +108,15 @@ var Promise = function(executor){
         }
 
         if (typeof error === 'undefined'){
-            error = NOOP;
+            error = PASS;
         }
 
-        return (function(){
-            return new Promise(function(res, rej){ 
-                rej(error(getReason()));
-            });
+        var nextToAdd = (typeof next === 'undefined') ? undefined : next;
 
-            if (next){
-                toReturn.fail(next.onError, next.next, next.getReason);
-            }
-        })();
+        return new BarneyPromise(function(res, rej){ 
+                rej(error(getReason()));
+            }, nextToAdd);
+        
     }
 
     this.resolve = function(value){
@@ -105,11 +127,7 @@ var Promise = function(executor){
         promiseValue = value;
 
         if (next){
-            try {
-                immediatelyFulfill(next.onSuccess, next.onError, next.next, next.getValue);
-            } catch (err){
-                return promiseInstance.reject(err);
-            }
+            immediatelyFulfill(next.onSuccess, next.onError, next.next)
         }
     }
 
@@ -121,27 +139,38 @@ var Promise = function(executor){
         promiseReason = reason;
 
         if (next){
-            immediatelyReject(next.onError, next.next, next.getReason);
+            immediatelyReject(next.onError, next.next)
         }
     }
 
-    var setNext = function(next, onSuccess, onError){
-        while (typeof next !== 'undefined'){
-            next = next.next;
+    var setNext = function(onSuccess, onError){
+
+        if (typeof onError === 'undefined'){
+            onError = PASS;
         }
 
-        next = {
-            next: undefined,
-            onSuccess: onSuccess,
-            onError: onError,
-            getValue: promiseInstance.getValue,
-            getReason: promiseInstance.getReason
+        var createNext = function(){
+            return {
+                next: undefined,
+                onSuccess: onSuccess,
+                onError: onError
+            }
+        }
+
+        if (typeof next === 'undefined'){
+            next = createNext();
+        } else {
+            lastNext = next;        
+            while (typeof lastNext.next !== 'undefined'){
+                lastNext = lastNext.next;
+            }
+            lastNext.next = createNext();
         }
     }
 
     this.then = function(onSuccess, onError){
         if (promiseInstance.isPending()){
-            setNext(next, onSuccess, onError);
+            setNext(onSuccess, onError);
             return promiseInstance;
         }
 
@@ -162,7 +191,18 @@ var Promise = function(executor){
         try {
             executor(promiseInstance.resolve, promiseInstance.reject);
         } catch (err){
-            promiseInstance.reject(err);
+            if (next){
+                promiseInstance.reject(err);   
+            } else {
+                console.warn('BarneyPromise :: uncaught exception: ' + err.toString());
+                throw new Error(err.toString());
+            }
         }
     }
+}
+
+if (typeof module === 'object' && module.exports) {
+    module.exports = BarneyPromise;
+} else {
+    window.BarneyPromise = BarneyPromise;
 }
