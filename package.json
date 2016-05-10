@@ -9,7 +9,7 @@
   "scripts": {
     "build": "browserify src/promiselite.js -o dist/promiselite.js -s PromiseLite && browserify src/promiselite.js -s PromiseLite | uglifyjs > dist/promiselite.min.js",
     "test:develop": "karma start",
-    "test": "karma start --no-auto-watch --browsers Chrome --single-run"
+    "test": "karma start --no-auto-watch --browsers PhantomJS --single-run"
   },
   "repository": {
     "type": "git",
@@ -26,11 +26,9 @@
   "author": "Fabio Fognani",
   "license": "MIT",
   "devDependencies": {
-    "bower": "^1.7.9",
     "browserify": "^13.0.0",
     "browserify-istanbul": "^2.0.0",
     "catharsis": "^0.8.7",
-    "coveralls": "^2.11.9",
     "istanbul": "^0.4.3",
     "jasmine-ajax": "^3.2.0",
     "jasmine-core": "^2.4.1",

@@ -179,6 +179,103 @@
     var PublicPromise = function(executor){
         return new PrivatePromise(executor);
     }
+
+    PublicPromise.all = function(promiseList){
+        var promiseAll = new Promise();
+        var promiseCount = promiseList.length;
+
+        var results = new Array(promiseCount);
+        var reasons = new Array(promiseCount);
+        var fulfilled = new Array(promiseCount);
+
+        var checkAllFulfilled = function(){
+            var counted = 0;
+            for (var key in fulfilled){
+                counted++;
+                if (!fulfilled[key]){
+                    promiseAll.reject(reasons);
+                }
+            }
+
+            if (counted == promiseCount){
+                promiseAll.resolve(values);
+            }
+        }
+        
+        var promise;
+        
+        for (var i=0; i<promiseList.length; i++){
+            promise = promiseList[i];
+            
+            (function(num, prom){
+                prom.then(function(value){
+                    fulfilled[num] = true;
+                    results[num] = value;
+                    checkAllFulfilled();
+                }).fail(function(reason){
+                    fulfilled[num] = false;
+                    reasons[num] = reason;
+                    checkAllFulfilled();
+                });
+            })(i, promise);
+        }
+
+    }
+
+    PublicPromise.race = function(promiseList){
+        var promiseRace = new Promise();
+        
+        var promise;
+        for (var i=0; i<promiseList.length; i++){
+            promise = promiseList[i];
+            
+            (function(num, prom){
+                prom.then(function(value){
+                    promiseRace.resolve(value);
+                }).fail(function(reason){
+                    promiseRace.reject(reason);
+                });
+            })(i, promise);
+        }
+
+    }
+
+    PublicPromise.any = function(promiseList){
+        var promiseAny = new Promise();
+        var promiseCount = promiseList.length;
+
+        var rejected = new Array(promiseCount);
+        var reasons = new Array(promiseCount);
+
+        var allRejected = function(){
+            for (var j=0; j<promiseCount; j++){
+                if (!rejected[j]){
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        var promise;
+        for (var i=0; i<promiseList.length; i++){
+            promise = promiseList[i];
+            
+            (function(num, prom){
+                prom.then(function(value){
+                    promiseAny.resolve(value);
+                }).fail(function(reason){
+                    rejected[num] = true;
+                    reasons[num] = reason;
+
+                    if (allRejected()){
+                        promiseAny.reject(reasons);
+                    }
+                });
+            })(i, promise);
+        }
+
+    }
+
  
     module.exports = PublicPromise;
 
