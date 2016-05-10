@@ -19,6 +19,14 @@ var Promise = function(executor){
 
     var NOOP = function(){};
 
+    this.getValue = function(){
+        return promiseValue;
+    }
+
+    this.getReason = function(){
+        return promiseReason;
+    }
+
     this.isPending = function(){
         return promiseStatusIndex === 0;
     }
@@ -39,7 +47,11 @@ var Promise = function(executor){
         return promiseStatus[promiseStatusIndex];
     }
 
-    var immediatelyFulfill = function(success, error, next){
+    var immediatelyFulfill = function(success, error, next, getValue){
+
+        if (typeof getValue === 'undefined'){
+            getValue = promiseInstance.getValue;
+        }
 
         if (typeof success === 'undefined'){
             success = NOOP;
@@ -48,38 +60,41 @@ var Promise = function(executor){
             error = NOOP;
         }
 
-        var toReturn = new Promise(function(res, rej){
-            try {
-                res(success(promiseValue));
-            } catch (err){
-                rej(error(err));
+        return (function(){
+            return new Promise(function(res, rej){
+                try {
+                    res(success(getValue()));
+                } catch (err){
+                    rej(error(err));
+                }
+            });
+
+            if (next){
+                toReturn.then(next.onSuccess, next.onError, next.next, next.getValue);
             }
-        });
-
-        if (next){
-            toReturn.then(next.onSuccess, next.onError, next.next);
-        }
-
-        return toReturn;
+        })();
 
     }
 
-    var immediatelyReject = function(error, next){
+    var immediatelyReject = function(error, next, getReason){
+
+        if (typeof getReason === 'undefined'){
+            getReason = promiseInstance.getReason;
+        }
 
         if (typeof error === 'undefined'){
             error = NOOP;
         }
 
-        var toReturn = new Promise(function(res, rej){ 
-            rej(error(promiseReason));
-        });
+        return (function(){
+            return new Promise(function(res, rej){ 
+                rej(error(getReason()));
+            });
 
-        if (next){
-            toReturn.fail(next.onError, next.next);
-        }
-
-        return toReturn;
-
+            if (next){
+                toReturn.fail(next.onError, next.next, next.getReason);
+            }
+        })();
     }
 
     this.resolve = function(value){
@@ -91,7 +106,7 @@ var Promise = function(executor){
 
         if (next){
             try {
-                immediatelyFulfill(next.onSuccess, next.onError, next.next);
+                immediatelyFulfill(next.onSuccess, next.onError, next.next, next.getValue);
             } catch (err){
                 return promiseInstance.reject(err);
             }
@@ -106,31 +121,28 @@ var Promise = function(executor){
         promiseReason = reason;
 
         if (next){
-            immediatelyReject(next.onSuccess, next.onError, next.next);
+            immediatelyReject(next.onError, next.next, next.getReason);
         }
     }
 
-    var createNext = function(onSuccess, onError){
-        var toReturn = {
+    var setNext = function(next, onSuccess, onError){
+        while (typeof next !== 'undefined'){
+            next = next.next;
+        }
+
+        next = {
             next: undefined,
             onSuccess: onSuccess,
             onError: onError,
+            getValue: promiseInstance.getValue,
+            getReason: promiseInstance.getReason
         }
-        toReturn.then = function(onSuc, onErr){
-            toReturn.next = createNext(onSuc, onErr);
-        }
-        return toReturn;
     }
 
     this.then = function(onSuccess, onError){
         if (promiseInstance.isPending()){
-            if (typeof next === 'undefined') { 
-                next = createNext(onSuccess, onError);
-                return promiseInstance;
-            } else {
-                next.then(onSuccess, onError);
-                return promiseInstance;
-            }
+            setNext(next, onSuccess, onError);
+            return promiseInstance;
         }
 
         if (promiseInstance.isFulfilled()){
