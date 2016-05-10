@@ -1,0 +1,59 @@
+{
+  "name": "promiselite",
+  "version": "1.0.0",
+  "description": "A light, browser-friendly implementation of JavaScript Promises",
+  "main": "promise.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "build": "browserify src/promiselite.js -o dist/promiselite.js -s PromiseLite && browserify src/promiselite.js -s PromiseLite | uglifyjs > dist/promiselite.min.js",
+    "test:develop": "karma start",
+    "test": "karma start --no-auto-watch --browsers Chrome --single-run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@bitbucket.org:ffognani/promiselite.git"
+  },
+  "keywords": [
+    "lite",
+    "light",
+    "browser",
+    "support",
+    "promise",
+    "javascript"
+  ],
+  "author": "Fabio Fognani",
+  "license": "MIT",
+  "devDependencies": {
+    "bower": "^1.7.9",
+    "browserify": "^13.0.0",
+    "browserify-istanbul": "^2.0.0",
+    "catharsis": "^0.8.7",
+    "coveralls": "^2.11.9",
+    "istanbul": "^0.4.3",
+    "jasmine-ajax": "^3.2.0",
+    "jasmine-core": "^2.4.1",
+    "jsdoc": "^3.2.2",
+    "karma": "^0.13.22",
+    "karma-browserify": "^4.4.2",
+    "karma-chrome-launcher": "^0.2.1",
+    "karma-cli": "^0.1.2",
+    "karma-commonjs": "0.0.13",
+    "karma-coverage": "^0.5.5",
+    "karma-coveralls": "^1.1.2",
+    "karma-firefox-launcher": "^0.1.6",
+    "karma-growl-reporter": "^0.1.1",
+    "karma-html-reporter": "^0.2.7",
+    "karma-jasmine": "^0.3.8",
+    "karma-mocha-reporter": "^1.1.3",
+    "karma-phantomjs-launcher": "^0.2.3",
+    "karma-spec-reporter": "0.0.22",
+    "phantomjs": "^2.1.7",
+    "phantomjs-polyfill": "0.0.1",
+    "phantomjs-prebuilt": "^2.1.7",
+    "taffydb": "^2.7.2",
+    "uglify-js": "^2.6.2",
+    "watchify": "^3.7.0"
+  }
+}
