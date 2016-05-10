@@ -1,6 +1,6 @@
 var BarneyPromise = (function(){
 
-    var BPromise = function(executor, nextProm){
+    var PrivateBarneyPromise = function(executor, nextProm){
 
         // executor called at the end of the definition of Promise
         if (typeof executor !== 'undefined' && typeof executor !== 'function'){
@@ -21,22 +21,6 @@ var BarneyPromise = (function(){
             0: 'pending',
             1: 'fulfilled',
             2: 'rejected'
-        }
-
-        this.printNext = function(){
-
-            var printNode = function(node){
-                if (typeof node === 'undefined'){
-                    return undefined
-                }
-                return {
-                    next: printNode(node.next),
-                    onSuccess: node.onSuccess && node.onSuccess.toString(),
-                    onError: node.onError && node.onError.toString(),
-                }
-            }
-
-            return printNode(next);
         }
 
         var NOOP = function(){};
@@ -87,7 +71,7 @@ var BarneyPromise = (function(){
 
             var nextToAdd = (typeof next === 'undefined') ? undefined : next;
 
-            return new BPromise(function(res, rej){
+            return new PrivateBarneyPromise(function(res, rej){
                 try {
                     res(success(_getValue()));
                 } catch (err){
@@ -107,7 +91,7 @@ var BarneyPromise = (function(){
                 error = PASS;
             }
 
-            return new BPromise(function(res, rej){ 
+            return new PrivateBarneyPromise(function(res, rej){ 
                 rej(error(_getReason()));
             }, next);
             
@@ -188,7 +172,7 @@ var BarneyPromise = (function(){
     }
     
     var PublicBarneyPromise = function(executor){
-        return new BPromise(executor);
+        return new PrivateBarneyPromise(executor);
     }
 
     return PublicBarneyPromise;
