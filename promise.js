@@ -1,6 +1,6 @@
 var BarneyPromise = (function(){
 
-    var PrivateBarneyPromise = function(executor, nextProm){
+    var PrivatePromise = function(executor, nextProm){
 
         // executor called at the end of the definition of Promise
         if (typeof executor !== 'undefined' && typeof executor !== 'function'){
@@ -69,19 +69,20 @@ var BarneyPromise = (function(){
                 error = PASS;
             }
 
-            var nextToAdd = (typeof next === 'undefined') ? undefined : next;
-
-            return new PrivateBarneyPromise(function(res, rej){
+            return new PrivatePromise(function(res, rej){
                 try {
                     res(success(_getValue()));
                 } catch (err){
+                    // if we're trying to pass the error to the next node of the chain
+                    // but the next node of the chain is undefined
+                    // throw error, otherwise pass it forward through the chain
                     if (error == PASS && typeof next === 'undefined'){
                         throw err;
                     } else {
                         rej(error(err));   
                     }
                 }
-            }, nextToAdd);
+            }, next);
 
         }
 
@@ -95,7 +96,7 @@ var BarneyPromise = (function(){
                 error = PASS;
             }
 
-            return new PrivateBarneyPromise(function(res, rej){ 
+            return new PrivatePromise(function(res, rej){ 
                 rej(error(_getReason()));
             }, next);
             
@@ -175,11 +176,11 @@ var BarneyPromise = (function(){
     
     }
     
-    var PublicBarneyPromise = function(executor){
-        return new PrivateBarneyPromise(executor);
+    var PublicPromise = function(executor){
+        return new PrivatePromise(executor);
     }
 
-    return PublicBarneyPromise;
+    return PublicPromise;
 
 })();
 
