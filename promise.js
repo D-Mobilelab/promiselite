@@ -75,10 +75,10 @@ var BarneyPromise = (function(){
                 try {
                     res(success(_getValue()));
                 } catch (err){
-                    if (next === undefined){
-                        rej(error(err));   
-                    } else {
+                    if (error == PASS && typeof next === 'undefined'){
                         throw err;
+                    } else {
+                        rej(error(err));   
                     }
                 }
             }, nextToAdd);

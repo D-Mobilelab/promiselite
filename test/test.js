@@ -120,6 +120,9 @@ it('should raise exception if there are no catches', function(){
     })
     .then(function(num){
         throw 'throwTest';
+    })
+    .fail(function(reason){
+        console.log(reason);
     });
 
 });
