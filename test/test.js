@@ -111,3 +111,15 @@ it('should not fail if an exception is thrown before the last catch', function()
     });
 
 });
+
+it('should raise exception if there are no catches', function(){
+    var pAsync4 = new BarneyPromise(function(resolve, reject){
+        setTimeout(function(){
+            resolve(0);
+        }, 100);
+    })
+    .then(function(num){
+        throw 'throwTest';
+    });
+
+});
