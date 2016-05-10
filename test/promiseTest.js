@@ -132,8 +132,20 @@ describe('Promises without executor', function(){
 
 describe('Promises with executor', function(){
 
-	it('should be resolved automatically', function(){
-		expect(PromiseLite).toBeDefined();
+	it('should be resolved automatically if resolve is invoked in the executor', function(){
+		var p = new PromiseLite(function(resolve, reject){
+			resolve();
+		});
+
+		expect(p.isFulfilled()).toBe(true);
+	});
+
+	it('should be rejected automatically if reject is invoked in the executor', function(){
+		var p = new PromiseLite(function(resolve, reject){
+			reject();
+		});
+
+		expect(p.isRejected()).toBe(true);
 	});
 
 	it('should throw an exception if the executor raises an error and there is no  fail to catch it', function(){
