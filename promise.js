@@ -1,10 +1,10 @@
-var BarneyPromise = (function(){
+var PromiseLite = (function(){
 
     var PrivatePromise = function(executor, nextProm){
 
         // executor called at the end of the definition of Promise
         if (typeof executor !== 'undefined' && typeof executor !== 'function'){
-            throw 'BarneyPromise :: executor must be a function, got ' + typeof executor;
+            throw 'PromiseLite :: executor must be a function, got ' + typeof executor;
         }
         
         var promiseInstance = this;
@@ -185,7 +185,7 @@ var BarneyPromise = (function(){
 })();
 
 if (typeof module === 'object' && module.exports) {
-    module.exports = BarneyPromise;
+    module.exports = PromiseLite;
 } else {
-    window.BarneyPromise = BarneyPromise;
+    window.PromiseLite = PromiseLite;
 }

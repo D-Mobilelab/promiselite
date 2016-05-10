@@ -17,7 +17,7 @@ var xit = function(description, func){
 
 it('synchronously resolved promises work', function(){
 
-    var p = new BarneyPromise(function(resolve, reject){
+    var p = new PromiseLite(function(resolve, reject){
         resolve(47);
     });
 
@@ -42,7 +42,7 @@ it('synchronously resolved promises work', function(){
 
 it('should catch exceptions in then', function(){
 
-    var pAsync = new BarneyPromise(function(resolve, reject){
+    var pAsync = new PromiseLite(function(resolve, reject){
         setTimeout(function(){
             resolve({test: 666});
         }, 10);
@@ -56,7 +56,7 @@ it('should catch exceptions in then', function(){
 });
 
 it('should catch errors after reject in executor', function(){
-    var pAsync1 = new BarneyPromise(function(resolve, reject){
+    var pAsync1 = new PromiseLite(function(resolve, reject){
         setTimeout(function(){
             reject('errorTest');
         }, 100);
@@ -69,7 +69,7 @@ it('should catch errors after reject in executor', function(){
 
 it('should handle chains of catches correctly', function(){
 
-    var pAsync2 = new BarneyPromise(function(resolve, reject){
+    var pAsync2 = new PromiseLite(function(resolve, reject){
         setTimeout(function(){
             reject('errorTest');
         }, 100);
@@ -91,7 +91,7 @@ it('should handle chains of catches correctly', function(){
 });
 
 it('should not fail if an exception is thrown before the last catch', function(){
-    var pAsync3 = new BarneyPromise(function(resolve, reject){
+    var pAsync3 = new PromiseLite(function(resolve, reject){
         setTimeout(function(){
             resolve(0);
         }, 100);
@@ -113,7 +113,7 @@ it('should not fail if an exception is thrown before the last catch', function()
 });
 
 it('should raise exception if there are no catches', function(){
-    var pAsync4 = new BarneyPromise(function(resolve, reject){
+    var pAsync4 = new PromiseLite(function(resolve, reject){
         setTimeout(function(){
             resolve(0);
         }, 100);
