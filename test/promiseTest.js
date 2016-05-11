@@ -484,3 +484,63 @@ describe('Promise.any', function(){
 	});
 	
 });
+
+describe('Promise.finally', function(){
+
+	it('should be executed when the promise is resolved', function(){
+		
+		var p1 = new PromiseLite();
+		
+		p1.force(function(value){
+			expect(value).toEqual(1);
+		});
+
+		p1.resolve(1);
+
+	});
+
+	it('should be executed when the promise is rejected', function(){
+		
+		var p1 = new PromiseLite();
+		
+		p1.force(function(reason){
+			expect(reason).toEqual(1);
+		});
+
+		p1.reject(1);
+
+	});
+
+	it('should be executed when a then raises an error', function(){
+		
+		var p1 = new PromiseLite();
+		
+		p1.then(function(){
+			throw 'testError';
+		}).force(function(value){
+			expect(value).toEqual('testError');
+		});
+
+		p1.resolve();
+
+	});
+
+	it('should be executed when a fail raises an error', function(){
+		
+		var p1 = new PromiseLite();
+		
+		p1.then(function(){
+			throw 'testError'
+		}).fail(function(){
+			throw 'anotherError';
+		}).then(function(){
+			expect(true).toBe(false); // should not enter here
+		}).force(function(value){
+			expect(value).toEqual('anotherError');
+		});
+
+		p1.resolve();
+
+	});
+	
+});

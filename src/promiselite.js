@@ -56,6 +56,7 @@ var PrivatePromise = function(executor, nextProm){
             try {
                 res(success(getValue()));
             } catch (err){
+
                 // if we're trying to pass the error to the next node of the chain
                 // but the next node of the chain is undefined
                 // throw error, otherwise pass it forward through the chain
@@ -72,7 +73,15 @@ var PrivatePromise = function(executor, nextProm){
     var immediatelyReject = function(error){
 
         return new PrivatePromise(function(res, rej){
-            rej(error(getReason()));
+            try {
+                rej(error(getReason()));
+            } catch (err){
+                if (next.length == 0){
+                    throw err;
+                } else {
+                    rej(PASS(err));   
+                }
+            }
         }, next);
         
     }
@@ -86,7 +95,12 @@ var PrivatePromise = function(executor, nextProm){
 
         if (next.length > 0){
             var toDo = next.shift();
-            immediatelyFulfill(toDo.onSuccess, toDo.onError);
+
+            if (toDo.onSuccess === toDo.onError){
+                immediatelyFulfill(toDo.onSuccess, PASS);
+            } else {
+                immediatelyFulfill(toDo.onSuccess, toDo.onError);   
+            }
         }
     }
 
@@ -125,6 +139,10 @@ var PrivatePromise = function(executor, nextProm){
             return promiseInstance;
         }
 
+        if (onSuccess === onError){
+            return immediatelyFinally(onSuccess);
+        }
+
         if (promiseInstance.isFulfilled()){
             return immediatelyFulfill(onSuccess, onError);
         }
@@ -136,6 +154,10 @@ var PrivatePromise = function(executor, nextProm){
 
     this.fail = function(onError){
         return promiseInstance.then(undefined, onError);
+    }
+
+    this.force = function(callback){
+        return promiseInstance.then(callback, callback);
     }
 
     if (typeof executor === 'function'){
