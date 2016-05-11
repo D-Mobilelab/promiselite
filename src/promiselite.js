@@ -207,7 +207,7 @@ PublicPromise.all = function(promiseList){
 /**
 * Returns a promise that takes an array of promises as argument and 
 * is fulfilled if and only if the first of them that is settled is fulfilled (rejected otherwise) 
-* @function all
+* @function race
 * @memberof PromiseLite
 * @param {Array} promiseList a list of PromiseLite instances
 */
@@ -238,7 +238,7 @@ PublicPromise.race = function(promiseList){
 /**
 * Returns a promise that takes an array of promises as argument and 
 * is fulfilled if at least one of them is fulfilled (rejected otherwise)
-* @function all
+* @function any
 * @memberof PromiseLite
 * @param {Array} promiseList a list of PromiseLite instances
 */
@@ -248,6 +248,7 @@ PublicPromise.any = function(promiseList){
 
     var rejected = new Array(promiseCount);
     var reasons = new Array(promiseCount);
+    var values = new Array(promiseCount);
 
     var allRejected = function(){
         for (var j=0; j<promiseCount; j++){
@@ -264,7 +265,8 @@ PublicPromise.any = function(promiseList){
         
         (function(num, prom){
             prom.then(function(value){
-                promiseAny.resolve(value);
+                values[num] = value;
+                promiseAny.resolve(values);
             }).fail(function(reason){
                 rejected[num] = true;
                 reasons[num] = reason;

@@ -274,8 +274,7 @@ describe('Promise.all', function(){
 	});
 });
 
-
-fdescribe('Promise.race', function(){
+describe('Promise.race', function(){
 
 	it('should be resolved if the first promise settled is fulfilled', function(){
 		var p1 = new PromiseLite();
@@ -387,6 +386,99 @@ fdescribe('Promise.race', function(){
 			expect(reasons[0]).toBeUndefined();
 			expect(reasons[2]).toEqual(2);
 			expect(reasons[1]).toBeUndefined;
+		});
+
+	});
+	
+});
+
+describe('Promise.any', function(){
+
+	it('should be resolved as soon as one promise is resolved', function(){
+		var p1 = new PromiseLite();
+		var p2 = new PromiseLite();
+		var p3 = new PromiseLite();
+
+		var pAny = new PromiseLite.any([p1, p2, p3]);
+
+		expect(pAny.isPending()).toBe(true);
+		
+		p1.reject();
+		expect(pAny.isPending()).toBe(true);
+
+		p2.reject();
+		expect(pAny.isPending()).toBe(true);
+		
+		p3.resolve(2);
+		expect(pAny.isFulfilled()).toBe(true);
+
+		pAny.then(function(values){
+			expect(values[0]).toBeUndefined();
+			expect(values[1]).toBeUndefined();
+			expect(values[2]).toEqual(2);
+		});
+
+		var p1 = new PromiseLite();
+		var p2 = new PromiseLite();
+		var p3 = new PromiseLite();
+
+		var pAny = new PromiseLite.any([p1, p2, p3]);
+
+		expect(pAny.isPending()).toBe(true);
+		
+		p1.reject();
+		expect(pAny.isPending()).toBe(true);
+
+		p2.resolve(1);
+		expect(pAny.isFulfilled()).toBe(true);
+		
+		p3.reject();
+
+		pAny.then(function(values){
+			expect(values[0]).toBeUndefined();
+			expect(values[1]).toEqual(1);
+			expect(values[2]).toBeUndefined();
+		});
+
+		var p1 = new PromiseLite();
+		var p2 = new PromiseLite();
+		var p3 = new PromiseLite();
+
+		var pAny = new PromiseLite.any([p1, p2, p3]);
+
+		expect(pAny.isPending()).toBe(true);
+		
+		p1.resolve(3);
+		expect(pAny.isFulfilled()).toBe(true);
+		
+		p2.reject();
+
+		pAny.then(function(values){
+			expect(values[0]).toEqual(3);
+			expect(values[1]).toBeUndefined();
+			expect(values[2]).toBeUndefined();
+		});
+
+	});
+
+	it('should be rejected if all the promises are rejected', function(){
+		
+		var p1 = new PromiseLite();
+		var p2 = new PromiseLite();
+		var p3 = new PromiseLite();
+
+		var pAny = new PromiseLite.any([p1, p2, p3]);
+
+		expect(pAny.isPending()).toBe(true);
+		
+		p1.reject(1);
+		p2.reject(2);
+		p3.reject(3);
+
+		pAny.fail(function(reasons){
+			expect(reasons[0]).toEqual(1);
+			expect(reasons[1]).toEqual(2);
+			expect(reasons[2]).toEqual(3);
 		});
 
 	});
