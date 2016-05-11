@@ -161,7 +161,7 @@ var PublicPromise = function(executor){
 * @param {Array} promiseList a list of PromiseLite instances
 */
 PublicPromise.all = function(promiseList){
-    var promiseAll = new Promise();
+    var promiseAll = new PublicPromise();
     var promiseCount = promiseList.length;
 
     var results = new Array(promiseCount);
@@ -174,11 +174,12 @@ PublicPromise.all = function(promiseList){
             counted++;
             if (!fulfilled[key]){
                 promiseAll.reject(reasons);
+                return;
             }
         }
 
         if (counted == promiseCount){
-            promiseAll.resolve(values);
+            promiseAll.resolve(results);
         }
     }
     
@@ -200,6 +201,7 @@ PublicPromise.all = function(promiseList){
         })(i, promise);
     }
 
+    return promiseAll;
 }
 
 /**
@@ -210,7 +212,7 @@ PublicPromise.all = function(promiseList){
 * @param {Array} promiseList a list of PromiseLite instances
 */
 PublicPromise.race = function(promiseList){
-    var promiseRace = new Promise();
+    var promiseRace = new PublicPromise();
     
     var promise;
     for (var i=0; i<promiseList.length; i++){
@@ -225,6 +227,7 @@ PublicPromise.race = function(promiseList){
         })(i, promise);
     }
 
+    return promiseRace;
 }
 
 /**
@@ -235,7 +238,7 @@ PublicPromise.race = function(promiseList){
 * @param {Array} promiseList a list of PromiseLite instances
 */
 PublicPromise.any = function(promiseList){
-    var promiseAny = new Promise();
+    var promiseAny = new PublicPromise();
     var promiseCount = promiseList.length;
 
     var rejected = new Array(promiseCount);
@@ -268,6 +271,7 @@ PublicPromise.any = function(promiseList){
         })(i, promise);
     }
 
+    return promiseAny;
 }
 
 module.exports = PublicPromise;

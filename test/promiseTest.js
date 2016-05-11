@@ -176,3 +176,102 @@ describe('Promises with executor', function(){
 		expect(testError).toEqual('testError');
 	});
 });
+
+describe('Promise.all', function(){
+
+	it('should be resolved if all the promises are resolved', function(){
+		var p1 = new PromiseLite();
+		var p2 = new PromiseLite();
+		var p3 = new PromiseLite();
+
+		var pAll = new PromiseLite.all([p1, p2, p3]);
+
+		expect(pAll.isPending()).toBe(true);
+		
+		p1.resolve(1);
+
+		expect(pAll.isPending()).toBe(true);
+
+		p2.resolve(2);
+
+		expect(pAll.isPending()).toBe(true);
+
+		p3.resolve(3);
+
+		expect(pAll.isFulfilled()).toBe(true);
+
+		pAll.then(function(values){
+			expect(values[0]).toEqual(1);
+			expect(values[1]).toEqual(2);
+			expect(values[2]).toEqual(3);
+		});
+
+	});
+
+	it('should be rejected if any the promises are rejected', function(){
+		var p1 = new PromiseLite();
+		var p2 = new PromiseLite();
+		var p3 = new PromiseLite();
+
+		var pAll = new PromiseLite.all([p1, p2, p3]);
+
+		expect(pAll.isPending()).toBe(true);
+		
+		p1.resolve();
+
+		expect(pAll.isPending()).toBe(true);
+
+		p2.resolve();
+
+		expect(pAll.isPending()).toBe(true);
+
+		p3.reject(3);
+
+		expect(pAll.isRejected()).toBe(true);
+		pAll.fail(function(reasons){
+			expect(reasons[0]).toBeUndefined();
+			expect(reasons[1]).toBeUndefined();
+			expect(reasons[2]).toEqual(3);
+		});
+
+		var p1 = new PromiseLite();
+		var p2 = new PromiseLite();
+		var p3 = new PromiseLite();
+
+		var pAll = new PromiseLite.all([p1, p2, p3]);
+
+		expect(pAll.isPending()).toBe(true);
+		
+		p1.resolve();
+
+		expect(pAll.isPending()).toBe(true);
+
+		p2.reject(2);
+
+		expect(pAll.isRejected()).toBe(true);
+		pAll.fail(function(reasons){
+			expect(reasons[0]).toBeUndefined();
+			expect(reasons[2]).toBeUndefined();
+			expect(reasons[1]).toEqual(2);
+		});
+
+		var p1 = new PromiseLite();
+		var p2 = new PromiseLite();
+		var p3 = new PromiseLite();
+
+		var pAll = new PromiseLite.all([p1, p2, p3]);
+
+		expect(pAll.isPending()).toBe(true);
+		
+		p1.reject(3);
+
+		expect(pAll.isRejected()).toBe(true);
+		pAll.fail(function(reasons){
+			expect(reasons[2]).toBeUndefined();
+			expect(reasons[1]).toBeUndefined();
+			expect(reasons[0]).toEqual(3);
+		});
+	});
+
+	
+});

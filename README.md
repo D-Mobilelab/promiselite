@@ -83,3 +83,9 @@ To be implemented (soon).
 
 
 To be implemented (soon).
+
+
+## PromiseLite.any
+
+
+To be implemented (soon).
