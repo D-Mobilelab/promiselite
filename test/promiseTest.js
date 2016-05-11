@@ -145,7 +145,7 @@ describe('Promises without executor', function(){
 
 describe('Promises with executor', function(){
 
-	it('should be resolved automatically if resolve is invoked in the executor', function(){
+	it('should be resolved automatically if resolve is invoked in the executor (synchronous function)', function(){
 		var p = new PromiseLite(function(resolve, reject){
 			resolve();
 		});
@@ -153,7 +153,19 @@ describe('Promises with executor', function(){
 		expect(p.isFulfilled()).toBe(true);
 	});
 
-	it('should be rejected automatically if reject is invoked in the executor', function(){
+	it('should be resolved automatically if resolve is invoked in the executor (asynchronous function)', function(done){
+		var p = new PromiseLite(function(resolve, reject){
+			setTimeout(resolve, 1000);
+		});
+
+		p.then(function(){
+			expect(p.isFulfilled()).toBe(true);
+			done();
+		})
+		
+	});
+
+	it('should be rejected automatically if reject is invoked in the executor (synchronous function)', function(){
 		var p = new PromiseLite(function(resolve, reject){
 			reject();
 		});
@@ -161,7 +173,19 @@ describe('Promises with executor', function(){
 		expect(p.isRejected()).toBe(true);
 	});
 
-	it('should throw an exception if the executor raises an error and there is no  fail to catch it', function(){
+	it('should be rejected automatically if reject is invoked in the executor (asynchronous function)', function(done){
+		var p = new PromiseLite(function(resolve, reject){
+			setTimeout(reject, 1000);
+		});
+
+		p.fail(function(){
+			expect(p.isRejected()).toBe(true);
+			done();
+		})
+		
+	});
+
+	it('should throw an exception if the executor raises an error and there is no fail to catch it', function(){
 		
 		var testError;
 
@@ -485,7 +509,7 @@ describe('Promise.any', function(){
 	
 });
 
-describe('Promise.finally', function(){
+describe('Promise.force', function(){
 
 	it('should be executed when the promise is resolved', function(){
 		
