@@ -30,22 +30,47 @@ var PrivatePromise = function(executor, nextProm){
         return promiseReason;
     }
 
+    /**
+    * Returns whether the current PromiseLite instance is in a "pending" state
+    * @function isPending
+    * @memberof PromiseLite#
+    */
     this.isPending = function(){
         return promiseStatusIndex === 0;
     }
 
+    /**
+    * Returns whether the current PromiseLite instance is in a "fulfilled" state
+    * @function isFulfilled
+    * @memberof PromiseLite#
+    */
     this.isFulfilled = function(){
         return promiseStatusIndex === 1;
     }
 
+    /**
+    * Returns whether the current PromiseLite instance is in a "rejected" state
+    * @function isRejected
+    * @memberof PromiseLite#
+    */
     this.isRejected = function(){
         return promiseStatusIndex === 2;
     }
 
+    /**
+    * Returns whether the current PromiseLite instance is in a "settled" state (fulfilled or rejected)
+    * @function isSettled
+    * @memberof PromiseLite#
+    */
     this.isSettled = function(){
         return (promiseStatusIndex === 1) || (promiseStatusIndex === 2);
     }
 
+    /**
+    * Returns the state of the current PromiseLite instance as a string
+    * @function getStatus
+    * @memberof PromiseLite#
+    */
     this.getStatus = function(){
         return PROMISE_STATUS[promiseStatusIndex];
     }
@@ -85,6 +110,12 @@ var PrivatePromise = function(executor, nextProm){
         
     }
 
+    /**
+    * Resolves the current PromiseLite instance
+    * @function resolve
+    * @memberof PromiseLite#
+    * @param {any} value to which the current PromiseLite instance is resolved
+    */
     this.resolve = function(value){
         if (promiseStatusIndex === 1){
             return;
@@ -103,6 +134,12 @@ var PrivatePromise = function(executor, nextProm){
         }
     }
 
+    /**
+    * Rejects the current PromiseLite instance
+    * @function reject
+    * @memberof PromiseLite#
+    * @param {any} reason the reason of the rejection
+    */
     this.reject = function(reason){
         if (promiseStatusIndex === 2){
             return;
@@ -132,6 +169,13 @@ var PrivatePromise = function(executor, nextProm){
         });
     }
 
+    /**
+    * Adds a then block to the current PromiseLite instance
+    * @function then
+    * @memberof PromiseLite#
+    * @param {function} onSuccess function that will be executed if the PromiseLite is resolved
+    * @param {function} onError function that will be executed if the PromiseLite is rejected
+    */
     this.then = function(onSuccess, onError){
         if (promiseInstance.isPending()){
             addNext(onSuccess, onError);
@@ -147,10 +191,22 @@ var PrivatePromise = function(executor, nextProm){
         }
     }
 
+    /**
+    * Adds a fail (catch) block to the current PromiseLite instance
+    * @function fail
+    * @memberof PromiseLite#
+    * @param {function} onError function that will be executed if the PromiseLite is rejected
+    */
     this.fail = function(onError){
         return promiseInstance.then(undefined, onError);
     }
 
+    /**
+    * Adds a force (finally) block to the current PromiseLite instance
+    * @function force
+    * @memberof PromiseLite#
+    * @param {function} callback function that will be executed both if the PromiseLite is resolved or rejected
+    */
     this.force = function(callback){
         return promiseInstance.then(callback, callback);
     }
@@ -164,7 +220,6 @@ var PrivatePromise = function(executor, nextProm){
 /**
 * PromiseLite public constructor
 * @class PromiseLite
-* @version 1.0
 */
 var PublicPromise = function(executor){
     return new PrivatePromise(executor);

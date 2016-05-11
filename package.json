@@ -7,6 +7,7 @@
     "test": "test"
   },
   "scripts": {
+  	"postinstall": "npm build",
     "docs": "rm out -rf && node_modules/.bin/jsdoc src/promiselite.js",
     "build:no:min": "mkdir -p dist && browserify src/promiselite.js -o dist/promiselite.js -s PromiseLite",
     "build:min": "browserify src/promiselite.js -s PromiseLite | uglifyjs > dist/promiselite.min.js",
@@ -42,7 +43,6 @@
     "karma-cli": "^0.1.2",
     "karma-commonjs": "0.0.13",
     "karma-coverage": "^0.5.5",
-    "karma-coveralls": "^1.1.2",
     "karma-firefox-launcher": "^0.1.6",
     "karma-growl-reporter": "^0.1.1",
     "karma-html-reporter": "^0.2.7",
