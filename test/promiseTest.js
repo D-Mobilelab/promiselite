@@ -123,13 +123,11 @@ describe('Promises without executor', function(){
 			expect(true).toBe(false); // this should not be executed
 		}).fail(function(reason){
 			failCalled1 = true;
-			console.log(">>> reason", reason)
 			expect(reason).toEqual('testError');
 			throw 42;
 		}).then(function(){
 			expect(true).toBe(6); // this should not be called
 		}).fail(function(reason){
-			console.log(">>> otherreason", reason);
 			failCalled2 = true;
 			expect(reason).toEqual(42);
 		});

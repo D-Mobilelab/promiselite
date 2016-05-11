@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "build": "browserify src/promiselite.js -o dist/promiselite.js -s PromiseLite && browserify src/promiselite.js -s PromiseLite | uglifyjs > dist/promiselite.min.js",
+    "build": "mkdir -p dist && browserify src/promiselite.js -o dist/promiselite.js -s PromiseLite && browserify src/promiselite.js -s PromiseLite | uglifyjs > dist/promiselite.min.js",
     "test:develop": "karma start",
     "test": "karma start --no-auto-watch --browsers PhantomJS --single-run"
   },
