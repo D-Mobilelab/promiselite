@@ -213,6 +213,9 @@ PublicPromise.all = function(promiseList){
 */
 PublicPromise.race = function(promiseList){
     var promiseRace = new PublicPromise();
+    var promiseCount = promiseList.length;
+    var results = new Array(promiseCount);
+    var reasons = new Array(promiseCount);
     
     var promise;
     for (var i=0; i<promiseList.length; i++){
@@ -220,9 +223,11 @@ PublicPromise.race = function(promiseList){
         
         (function(num, prom){
             prom.then(function(value){
-                promiseRace.resolve(value);
+                results[num] = value;
+                promiseRace.resolve(results);
             }).fail(function(reason){
-                promiseRace.reject(reason);
+                reasons[num] = reason;
+                promiseRace.reject(reasons);
             });
         })(i, promise);
     }
