@@ -1,7 +1,3 @@
-# README #
-
-This README would normally document whatever steps are necessary to get your application up and running.
-
 ### What is PromiseLite? ###
 
 PromiseLite is a light, browser-friendly implementation of JavaScript promises. 
