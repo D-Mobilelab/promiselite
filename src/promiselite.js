@@ -56,7 +56,6 @@ var PrivatePromise = function(executor, nextProm){
             try {
                 res(success(getValue()));
             } catch (err){
-
                 // if we're trying to pass the error to the next node of the chain
                 // but the next node of the chain is undefined
                 // throw error, otherwise pass it forward through the chain
@@ -137,10 +136,6 @@ var PrivatePromise = function(executor, nextProm){
         if (promiseInstance.isPending()){
             addNext(onSuccess, onError);
             return promiseInstance;
-        }
-
-        if (onSuccess === onError){
-            return immediatelyFinally(onSuccess);
         }
 
         if (promiseInstance.isFulfilled()){
