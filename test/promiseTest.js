@@ -542,5 +542,27 @@ describe('Promise.finally', function(){
 		p1.resolve();
 
 	});
+
+	it('should be executed in chain', function(){
+		
+		var p1 = new PromiseLite();
+		
+		p1.force(function(){
+			throw 'error1';
+		}).fail(function(reason){
+			expect(reason).toEqual('error1');
+			throw 'error2';
+		}).force(function(value){
+			expect(value).toEqual('error2');
+			throw 'error3';
+		}).then(function(value){
+			expect(true).toBe(false); // should not enter here
+		}).force(function(reason){
+			expect(reason).toEqual('error3')
+		});
+
+		p1.resolve();
+
+	});
 	
 });
