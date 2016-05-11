@@ -1,20 +1,17 @@
 ### What is PromiseLite? ###
 
-PromiseLite is a light, browser-friendly implementation of JavaScript promises. 
-
+*PromiseLite* is a light, browser-friendly implementation of JavaScript promises. 
 
 
 ### Setup ###
 
-If you want to use PromiseLite in your project, just download 
+If you want to use *PromiseLite* in your project, just download 
 ```
 #!JavaScript
 
 dist/promiselite.min.js
 ```
- and import it into a HTML script tag.
-
-
+ and import it into a HTML script tag, like this:
 
 ```
 #!HTML
@@ -32,7 +29,13 @@ dist/promiselite.min.js
 ### Using PromiseLite ###
 
 
-## Basic executors, then and fail*
+## Executors, then and fail
+
+See the documentation of JavaScript *Promise* [here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise).
+
+The name *fail* was used instead of *catch* for compatibility reasons. since some browsers do not allow bare keywords in dot notation.
+
+**Example**
 
 ```
 #!JavaScript
@@ -52,7 +55,30 @@ var p = new PromiseLite(function(resolve, reject){
 });
 ```
 
-*I used the name "fail" for compatibility reasons (catch is a keyword and in some cases a SyntaxError is raised if catch is used outside a try/catch block).
+## Forced blocks
+
+The method *force* corresponds to a *finally* block applied to a chain of promises. It is executed both when a *PromiseLite* instance is both in a fulfilled or rejected state. 
+
+The name *force* was used instead of *finally* for compatibility reasons since some browsers do not allow bare keywords in dot notation.
+
+**Example**
+
+```
+#!javascript
+
+var p = new PromiseLite();
+
+p.then(function(value){
+   // do something if resolved
+   // i.e. read data from an open file
+}).fail(function(reason){
+   // do something if rejected (or if an Error is raised)
+   // i.e. show an error message on screen - "missing file"
+}).force(function(){
+   // do something both if resolved or rejected
+   // i.e. close the file
+});
+```
 
 ## Resolving a Promise created without an executor
 
@@ -76,7 +102,7 @@ p.resolve(42); // outputs 'The answer is 42'
 ## PromiseLite.all 
 
 
-PromiseLite.all takes an Array of PromiseLite as argument and is resolved if and only if all such promises are fulfilled.
+*PromiseLite.all* takes an *Array* of *PromiseLite* as argument and is resolved if and only if all such promises are fulfilled.
 
 
 ```
@@ -95,9 +121,11 @@ var pAll = new PromiseLite.all([p1, p2, p3]);
 ## PromiseLite.race
 
 
-PromiseLite.race takes an Array of PromiseLite as argument, then
-* if the first promise that is settled is fulfilled, the promise returned by PromiseLite.race is resolved
-* if the first promise that is settled is rejected, the promise returned by PromiseLite.race is rejected
+*PromiseLite.race* takes an Array of *PromiseLite* as argument, then
+
+* if the first promise that is settled is fulfilled, the promise returned by *PromiseLite.race* is resolved
+
+* if the first promise that is settled is rejected, the promise returned by *PromiseLite.race* is rejected
 
 
 ```
@@ -116,9 +144,11 @@ var pRace = new PromiseLite.race([p1, p2, p3]);
 
 
 
-PromiseLite.any takes an Array of PromiseLite as argument, then
-* if the at least one of such promises is fulfilled, the promise returned by PromiseLite.any is resolved
-* if all such promises are rejected, the promise returned by PromiseLite.any is rejected
+*PromiseLite.any* takes an Array of *PromiseLite* as argument, then
+
+* if at least one of such promises is fulfilled, the promise returned by *PromiseLite.any* is resolved
+
+* if all the promises are rejected, the promise returned by *PromiseLite.any* is rejected
 
 
 ```
@@ -130,31 +160,4 @@ var p3 = new PromiseLite();
 
 var pAny = new PromiseLite.any([p1, p2, p3]);
 
-```
-
-
-
-## force promises
-
-
-
-"force"* corresponds to a "finally" block applied to a chain of promises. It is executed both when a PromiseLite instance is in a fulfilled or rejected state.
-
-
-*I used the name "force" for compatibility reasons (finally is a keyword and in some cases a SyntaxError is raised if finally is used outside a try/catch/finally block)
-```
-#!javascript
-
-var p = new PromiseLite();
-
-p.then(function(value){
-   // do something if resolved
-   // i.e. read data from an open file
-}).fail(function(reason){
-   // do something if rejected (or if an Error is raised)
-   // i.e. show an error message on screen - "missing file"
-}).finally(function(){
-   // do something both if resolved or rejected
-   // i.e. close the file
-});
 ```
