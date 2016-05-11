@@ -76,16 +76,85 @@ p.resolve(42); // outputs 'The answer is 42'
 ## PromiseLite.all 
 
 
-To be implemented (soon).
+PromiseLite.all takes an Array of PromiseLite as argument and is resolved if and only if all such promises are fulfilled.
+
+
+```
+#!javascript
+
+var p1 = new PromiseLite();
+var p2 = new PromiseLite();
+var p3 = new PromiseLite();
+
+var pAll = new PromiseLite.all([p1, p2, p3]);
+
+```
+
 
 
 ## PromiseLite.race
 
 
-To be implemented (soon).
+PromiseLite.race takes an Array of PromiseLite as argument, then
+* if the first promise that is settled is fulfilled, the promise returned by PromiseLite.race is resolved
+* if the first promise that is settled is rejected, the promise returned by PromiseLite.race is rejected
+
+
+```
+#!javascript
+
+var p1 = new PromiseLite();
+var p2 = new PromiseLite();
+var p3 = new PromiseLite();
+
+var pRace = new PromiseLite.race([p1, p2, p3]);
+
+```
 
 
 ## PromiseLite.any
 
 
-To be implemented (soon).
+
+PromiseLite.any takes an Array of PromiseLite as argument, then
+* if the at least one of such promises is fulfilled, the promise returned by PromiseLite.any is resolved
+* if all such promises are rejected, the promise returned by PromiseLite.any is rejected
+
+
+```
+#!javascript
+
+var p1 = new PromiseLite();
+var p2 = new PromiseLite();
+var p3 = new PromiseLite();
+
+var pAny = new PromiseLite.any([p1, p2, p3]);
+
+```
+
+
+
+## force promises
+
+
+
+"force"* corresponds to a "finally" block applied to a chain of promises. It is executed both when a PromiseLite instance is in a fulfilled or rejected state.
+
+
+*I used the name "force" for compatibility reasons (finally is a keyword and in some cases a SyntaxError is raised if finally is used outside a try/catch/finally block)
+```
+#!javascript
+
+var p = new PromiseLite();
+
+p.then(function(value){
+   // do something if resolved
+   // i.e. read data from an open file
+}).fail(function(reason){
+   // do something if rejected (or if an Error is raised)
+   // i.e. show an error message on screen - "missing file"
+}).finally(function(){
+   // do something both if resolved or rejected
+   // i.e. close the file
+});
+```
