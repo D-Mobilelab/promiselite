@@ -7,7 +7,10 @@
     "test": "test"
   },
   "scripts": {
-    "build": "mkdir -p dist && browserify src/promiselite.js -o dist/promiselite.js -s PromiseLite && browserify src/promiselite.js -s PromiseLite | uglifyjs > dist/promiselite.min.js",
+    "docs": "rm out -rf && node_modules/.bin/jsdoc src/promiselite.js",
+    "build:no:min": "mkdir -p dist && browserify src/promiselite.js -o dist/promiselite.js -s PromiseLite",
+    "build:min": "browserify src/promiselite.js -s PromiseLite | uglifyjs > dist/promiselite.min.js",
+    "build": "npm run docs && npm run build:no:min && npm run build:min",
     "test:develop": "karma start",
     "test": "karma start --no-auto-watch --browsers PhantomJS --single-run"
   },
