@@ -11,11 +11,7 @@
         var promiseStatusIndex = 0;
         var promiseValue;
         var promiseReason;
-        var next, lastNext;
-
-        if (nextProm){
-            next = nextProm;
-        }
+        var next = nextProm || [];
 
         var promiseStatus = {
             0: 'pending',
@@ -23,7 +19,6 @@
             2: 'rejected'
         }
 
-        var NOOP = function(){};
         var PASS = function(arg){
             return arg;
         }
@@ -56,27 +51,16 @@
             return promiseStatus[promiseStatusIndex];
         }
 
-        var immediatelyFulfill = function(success, error, next, _getValue){
-
-            if (typeof _getValue === 'undefined'){
-                _getValue = getValue;
-            }
-
-            if (typeof success === 'undefined'){
-                success = NOOP;
-            }
-            if (typeof error === 'undefined'){
-                error = PASS;
-            }
+        var immediatelyFulfill = function(success, error){
 
             return new PrivatePromise(function(res, rej){
                 try {
-                    res(success(_getValue()));
+                    res(success(getValue()));
                 } catch (err){
                     // if we're trying to pass the error to the next node of the chain
                     // but the next node of the chain is undefined
                     // throw error, otherwise pass it forward through the chain
-                    if (error == PASS && typeof next === 'undefined'){
+                    if (error == PASS && next.length == 0){
                         throw err;
                     } else {
                         rej(error(err));   
@@ -86,18 +70,10 @@
 
         }
 
-        var immediatelyReject = function(error, next, _getReason){
+        var immediatelyReject = function(error){
 
-            if (typeof _getReason === 'undefined'){
-                _getReason = getReason;
-            }
-
-            if (typeof error === 'undefined'){
-                error = PASS;
-            }
-
-            return new PrivatePromise(function(res, rej){ 
-                rej(error(_getReason()));
+            return new PrivatePromise(function(res, rej){
+                rej(error(getReason()));
             }, next);
             
         }
@@ -109,8 +85,9 @@
             promiseStatusIndex = 1;
             promiseValue = value;
 
-            if (next){
-                immediatelyFulfill(next.onSuccess, next.onError, next.next)
+            if (next.length > 0){
+                var toDo = next.shift();
+                immediatelyFulfill(toDo.onSuccess, toDo.onError);
             }
         }
 
@@ -121,39 +98,31 @@
             promiseStatusIndex = 2;
             promiseReason = reason;
 
-            if (next){
-                immediatelyReject(next.onError, next.next)
+            if (next.length > 0){
+                var toDo = next.shift();
+                immediatelyReject(toDo.onError);
             }
         }
 
-        var setNext = function(onSuccess, onError){
+        var addNext = function(onSuccess, onError){
 
             if (typeof onError === 'undefined'){
                 onError = PASS;
             }
 
-            var createNext = function(){
-                return {
-                    next: undefined,
-                    onSuccess: onSuccess,
-                    onError: onError
-                }
+            if (typeof onSuccess === 'undefined'){
+                onSuccess = PASS;
             }
 
-            if (typeof next === 'undefined'){
-                next = createNext();
-            } else {
-                lastNext = next;        
-                while (typeof lastNext.next !== 'undefined'){
-                    lastNext = lastNext.next;
-                }
-                lastNext.next = createNext();
-            }
+            next.push({
+                onSuccess: onSuccess,
+                onError: onError
+            });
         }
 
         this.then = function(onSuccess, onError){
             if (promiseInstance.isPending()){
-                setNext(onSuccess, onError);
+                addNext(onSuccess, onError);
                 return promiseInstance;
             }
 

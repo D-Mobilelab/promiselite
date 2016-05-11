@@ -22,9 +22,6 @@ module.exports = function(config) {
     ],
 
     preprocessors: {
-      // source files, that you wanna generate coverage for
-      // do not include tests or libraries
-      // (these files will be instrumented by Istanbul)
       'test/*Test.js': ['browserify']
     },
 
@@ -32,7 +29,7 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['coverage', 'mocha'],
+    reporters: ['mocha'],
 
     // web server port
     port: 9000,

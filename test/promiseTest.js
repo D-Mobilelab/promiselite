@@ -104,29 +104,44 @@ describe('Promises without executor', function(){
 		expect(testError).toEqual('testError');
 	});
 
-	/*it('should execute correctly then/fail-chains', function(){
+	it('should execute correctly then/fail-chains', function(){
 		var p = new PromiseLite();
 		
-		var testError;
+		var thenCalled1, thenCalled2, failCalled1, failCalled2;
 
-		p.then(function(value){
-			expect(value).toEqual(1);
-			return value + 1;
-		}).fail(function(reason){
+		p.fail(function(reason){
 			expect(undefined).toBe(null); // this should not be executed
 		}).then(function(value){
+			thenCalled1 = true;
+			expect(value).toEqual(1);
+			return value + 1;
+		}).then(function(value){
+			thenCalled2 = true;
 			expect(value).toEqual(2);
 			throw 'testError';
 		}).then(function(value){
 			expect(true).toBe(false); // this should not be executed
 		}).fail(function(reason){
+			failCalled1 = true;
+			console.log(">>> reason", reason)
 			expect(reason).toEqual('testError');
+			throw 42;
+		}).then(function(){
+			expect(true).toBe(6); // this should not be called
+		}).fail(function(reason){
+			console.log(">>> otherreason", reason);
+			failCalled2 = true;
+			expect(reason).toEqual(42);
 		});
 
 		p.resolve(1);
-		
-		expect(testError).toEqual('testError');
-	});*/
+
+		expect(thenCalled1).toBe(true);
+		expect(thenCalled2).toBe(true);
+		expect(failCalled1).toBe(true);
+		expect(failCalled2).toBe(true);
+
+	});
 
 });
 
