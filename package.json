@@ -1,6 +1,6 @@
 {
   "name": "promiselite",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A light, browser-friendly implementation of JavaScript Promises",
   "main": "promise.js",
   "directories": {

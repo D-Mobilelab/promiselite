@@ -25,6 +25,14 @@ dist/promiselite.min.js
 </html>
 ```
 
+You can also install the whole module in your project with   
+
+```
+#!sh
+
+npm install promiselite
+```
+
 
 ### Using PromiseLite ###
 
