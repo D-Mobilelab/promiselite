@@ -1,32 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>JSDoc: Source: promiselite.js</title>
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.PromiseLite = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
-</head>
-
-<body>
-
-<div id="main">
-
-    <h1 class="page-title">Source: promiselite.js</h1>
-
-    
-
-
-
-    
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>
 var PROMISE_STATUS = {
     0: 'pending',
     1: 'fulfilled',
@@ -40,7 +13,7 @@ var PASS = function(arg){
 var PrivatePromise = function(executor, nextProm){
 
     // executor called at the end of the definition of Promise
-    if (typeof executor !== 'undefined' &amp;&amp; typeof executor !== 'function'){
+    if (typeof executor !== 'undefined' && typeof executor !== 'function'){
         throw 'PromiseLite :: executor must be a function, got ' + typeof executor;
     }
     
@@ -58,47 +31,22 @@ var PrivatePromise = function(executor, nextProm){
         return promiseReason;
     }
 
-    /**
-    * Returns whether the current PromiseLite instance is in a "pending" state
-    * @function isPending
-    * @memberof PromiseLite#
-    */
     this.isPending = function(){
         return promiseStatusIndex === 0;
     }
 
-    /**
-    * Returns whether the current PromiseLite instance is in a "fulfilled" state
-    * @function isFulfilled
-    * @memberof PromiseLite#
-    */
     this.isFulfilled = function(){
         return promiseStatusIndex === 1;
     }
 
-    /**
-    * Returns whether the current PromiseLite instance is in a "rejected" state
-    * @function isRejected
-    * @memberof PromiseLite#
-    */
     this.isRejected = function(){
         return promiseStatusIndex === 2;
     }
 
-    /**
-    * Returns whether the current PromiseLite instance is in a "settled" state (fulfilled or rejected)
-    * @function isSettled
-    * @memberof PromiseLite#
-    */
     this.isSettled = function(){
         return (promiseStatusIndex === 1) || (promiseStatusIndex === 2);
     }
 
-    /**
-    * Returns the state of the current PromiseLite instance as a string
-    * @function getStatus
-    * @memberof PromiseLite#
-    */
     this.getStatus = function(){
         return PROMISE_STATUS[promiseStatusIndex];
     }
@@ -112,7 +60,7 @@ var PrivatePromise = function(executor, nextProm){
                 // if we're trying to pass the error to the next node of the chain
                 // but the next node of the chain is undefined
                 // throw error, otherwise pass it forward through the chain
-                if (error == PASS &amp;&amp; next.length == 0){
+                if (error == PASS && next.length == 0){
                     throw err;
                 } else {
                     rej(error(err));   
@@ -125,25 +73,11 @@ var PrivatePromise = function(executor, nextProm){
     var immediatelyReject = function(error){
 
         return new PrivatePromise(function(res, rej){
-            try {
-                rej(error(getReason()));
-            } catch (err){
-                if (next.length == 0){
-                    throw err;
-                } else {
-                    rej(PASS(err));   
-                }
-            }
+            rej(error(getReason()));
         }, next);
         
     }
 
-    /**
-    * Resolves the current PromiseLite instance
-    * @function resolve
-    * @memberof PromiseLite#
-    * @param {any} value to which the current PromiseLite instance is resolved
-    */
     this.resolve = function(value){
         if (promiseStatusIndex === 1){
             return;
@@ -153,21 +87,10 @@ var PrivatePromise = function(executor, nextProm){
 
         if (next.length > 0){
             var toDo = next.shift();
-
-            if (toDo.onSuccess === toDo.onError){
-                immediatelyFulfill(toDo.onSuccess, PASS);
-            } else {
-                immediatelyFulfill(toDo.onSuccess, toDo.onError);   
-            }
+            immediatelyFulfill(toDo.onSuccess, toDo.onError);
         }
     }
 
-    /**
-    * Rejects the current PromiseLite instance
-    * @function reject
-    * @memberof PromiseLite#
-    * @param {any} reason the reason of the rejection
-    */
     this.reject = function(reason){
         if (promiseStatusIndex === 2){
             return;
@@ -197,13 +120,6 @@ var PrivatePromise = function(executor, nextProm){
         });
     }
 
-    /**
-    * Adds a then block to the current PromiseLite instance
-    * @function then
-    * @memberof PromiseLite#
-    * @param {function} onSuccess function that will be executed if the PromiseLite is resolved
-    * @param {function} onError function that will be executed if the PromiseLite is rejected
-    */
     this.then = function(onSuccess, onError){
         if (promiseInstance.isPending()){
             addNext(onSuccess, onError);
@@ -219,24 +135,8 @@ var PrivatePromise = function(executor, nextProm){
         }
     }
 
-    /**
-    * Adds a fail (catch) block to the current PromiseLite instance
-    * @function fail
-    * @memberof PromiseLite#
-    * @param {function} onError function that will be executed if the PromiseLite is rejected
-    */
     this.fail = function(onError){
         return promiseInstance.then(undefined, onError);
-    }
-
-    /**
-    * Adds a force (finally) block to the current PromiseLite instance
-    * @function force
-    * @memberof PromiseLite#
-    * @param {function} callback function that will be executed both if the PromiseLite is resolved or rejected
-    */
-    this.force = function(callback){
-        return promiseInstance.then(callback, callback);
     }
 
     if (typeof executor === 'function'){
@@ -248,6 +148,7 @@ var PrivatePromise = function(executor, nextProm){
 /**
 * PromiseLite public constructor
 * @class PromiseLite
+* @version 1.0
 */
 var PublicPromise = function(executor){
     return new PrivatePromise(executor);
@@ -285,7 +186,7 @@ PublicPromise.all = function(promiseList){
     
     var promise;
     
-    for (var i=0; i&lt;promiseList.length; i++){
+    for (var i=0; i<promiseList.length; i++){
         promise = promiseList[i];
         
         (function(num, prom){
@@ -318,7 +219,7 @@ PublicPromise.race = function(promiseList){
     var reasons = new Array(promiseCount);
     
     var promise;
-    for (var i=0; i&lt;promiseList.length; i++){
+    for (var i=0; i<promiseList.length; i++){
         promise = promiseList[i];
         
         (function(num, prom){
@@ -351,7 +252,7 @@ PublicPromise.any = function(promiseList){
     var values = new Array(promiseCount);
 
     var allRejected = function(){
-        for (var j=0; j&lt;promiseCount; j++){
+        for (var j=0; j<promiseCount; j++){
             if (!rejected[j]){
                 return false;
             }
@@ -360,7 +261,7 @@ PublicPromise.any = function(promiseList){
     }
 
     var promise;
-    for (var i=0; i&lt;promiseList.length; i++){
+    for (var i=0; i<promiseList.length; i++){
         promise = promiseList[i];
         
         (function(num, prom){
@@ -383,26 +284,6 @@ PublicPromise.any = function(promiseList){
 
 module.exports = PublicPromise;
 
-</code></pre>
-        </article>
-    </section>
 
-
-
-
-</div>
-
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="PromiseLite.html">PromiseLite</a></li></ul>
-</nav>
-
-<br class="clear">
-
-<footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Thu May 12 2016 11:35:13 GMT+0200 (CEST)
-</footer>
-
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
-</body>
-</html>
+},{}]},{},[1])(1)
+});

@@ -1,13 +1,12 @@
 {
   "name": "promiselite",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "A light, browser-friendly implementation of JavaScript Promises",
   "main": "promise.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-  	"postinstall": "npm build",
     "docs": "rm out -rf && node_modules/.bin/jsdoc src/promiselite.js",
     "build:no:min": "mkdir -p dist && browserify src/promiselite.js -o dist/promiselite.js -s PromiseLite",
     "build:min": "browserify src/promiselite.js -s PromiseLite | uglifyjs > dist/promiselite.min.js",
