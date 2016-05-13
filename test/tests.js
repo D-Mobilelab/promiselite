@@ -593,7 +593,7 @@ var runTests = function(PromiseLite, who){
 
 describe(who + ': updatable promises', function(){
 
-		it(who + ': should be executed N times, given N in the constructor', function(){
+		it(who + ': should be resolved N times, given N in the constructor', function(){
 			
 			var resolveCount = 0;
 
