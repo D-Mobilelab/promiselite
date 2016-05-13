@@ -5,13 +5,7 @@
 
 ### Setup ###
 
-If you want to use *PromiseLite* in your project, just download 
-```
-#!JavaScript
-
-dist/promiselite.min.js
-```
- and import it into a HTML script tag, like this:
+If you want to use *PromiseLite* in your project, just download *dist/promiselite.min.js* and import it into a HTML script tag, like this:
 
 ```
 #!HTML

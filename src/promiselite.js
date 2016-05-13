@@ -117,7 +117,7 @@ var PrivatePromise = function(executor, nextProm){
     * @param {any} value to which the current PromiseLite instance is resolved
     */
     this.resolve = function(value){
-        if (promiseStatusIndex === 1){
+        if (promiseStatusIndex !== 0){
             return;
         }
         promiseStatusIndex = 1;
@@ -127,10 +127,9 @@ var PrivatePromise = function(executor, nextProm){
             var toDo = next.shift();
 
             if (toDo.onSuccess === toDo.onError){
-                immediatelyFulfill(toDo.onSuccess, PASS);
-            } else {
-                immediatelyFulfill(toDo.onSuccess, toDo.onError);   
+                toDo.onError = PASS;
             }
+            return immediatelyFulfill(toDo.onSuccess, toDo.onError);   
         }
     }
 
@@ -149,7 +148,7 @@ var PrivatePromise = function(executor, nextProm){
 
         if (next.length > 0){
             var toDo = next.shift();
-            immediatelyReject(toDo.onError);
+            return immediatelyReject(toDo.onError);
         }
     }
 
