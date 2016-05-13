@@ -123,7 +123,7 @@ var PrivatePromise = function(executor, nextProm, resolveMaxTimes){
             return promiseInstance;
         }
 
-        var maxTimesResolvedReached = !!maxTimesResolved && (timesResolved > maxTimesResolved);
+        var maxTimesResolvedReached = !!maxTimesResolved && (timesResolved >= maxTimesResolved);
         if (promiseStatusIndex === 1 && maxTimesResolvedReached){
             return promiseInstance;
         }
@@ -229,6 +229,9 @@ var PrivatePromise = function(executor, nextProm, resolveMaxTimes){
 /**
 * PromiseLite public constructor
 * @class PromiseLite
+* @param {function(resolve, reject)} [executor] the executor of this promise
+* @param {number} [resolveMaxTimes=1] max number of times this promise can be resolved 
+    (accepts <i>Infinity</i> for promises that can be resolved an unlimited number of times)
 */
 var PublicPromise = function(executor, resolveMaxTimes){
     return new PrivatePromise(executor, undefined, resolveMaxTimes);
