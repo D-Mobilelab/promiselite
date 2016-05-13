@@ -49,12 +49,12 @@ var p = new PromiseLite(function(resolve, reject){
         } else {
             reject('It failed!');
         }
-    }).then(function(value){
-        console.info('Yay! ' + value); // outputs 'Yay! It worked!'
-    }).fail(function(reason){
-        console.error('Ops! ' + reason); // outputs 'Ops! It failed!'
     });
-});
+}).then(function(value){
+    console.info('Yay! ' + value); // outputs 'Yay! It worked!'
+}).fail(function(reason){
+    console.error('Ops! ' + reason); // outputs 'Ops! It failed!'
+});;
 ```
 
 ## Forced blocks
