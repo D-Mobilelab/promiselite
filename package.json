@@ -12,7 +12,7 @@
     "build:min": "browserify src/promiselite.js -s PromiseLite | uglifyjs -c --mangle > dist/promiselite.min.js",
     "build": "npm run docs && npm run build:no:min && npm run build:min",
     "test:develop": "karma start",
-    "test": "karma start --no-auto-watch --browsers PhantomJS --single-run"
+    "test": "npm run build && karma start --no-auto-watch --browsers PhantomJS --single-run"
   },
   "repository": {
     "type": "git",
