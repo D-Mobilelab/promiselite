@@ -86,7 +86,7 @@ var PrivatePromise = function(executor, nextProm, resolveMaxTimes){
                 // if we're trying to pass the error to the next node of the chain
                 // but the next node of the chain is undefined
                 // throw error, otherwise pass it forward through the chain
-                if (error == PASS && deferred.length == 0){
+                if (error == PASS && (!deferred || deferred.length == 0)){
                     throw err;
                 } else {
                     rej(error(err));   
@@ -102,7 +102,7 @@ var PrivatePromise = function(executor, nextProm, resolveMaxTimes){
             try {
                 rej(error(getReason()));
             } catch (err){
-                if (deferred.length == 0){
+                if (!deferred || deferred.length == 0){
                     throw err;
                 } else {
                     rej(PASS(err));   
