@@ -78,7 +78,12 @@ var PrivatePromise = function(executor, nextProm, resolveMaxTimes){
         return PROMISE_STATUS[promiseStatusIndex];
     }
 
-    var immediatelyFulfill = function(success, error, deferred){
+    var immediatelyFulfill = function(success, error){        
+        var deferred = next.slice(1, next.length);
+
+        if (error == undefined){
+            error = PASS;
+        }
 
         return new PrivatePromise(function(res, rej){
             try {
@@ -87,7 +92,7 @@ var PrivatePromise = function(executor, nextProm, resolveMaxTimes){
                 // if we're trying to pass the error to the next node of the chain
                 // but the next node of the chain is undefined
                 // throw error, otherwise pass it forward through the chain
-                if (error == PASS && (!deferred || deferred.length == 0)){
+                if (error == PASS && deferred.length == 0){
                     throw err;
                 } else {
                     rej(error(err));   
@@ -97,13 +102,18 @@ var PrivatePromise = function(executor, nextProm, resolveMaxTimes){
 
     }
 
-    var immediatelyReject = function(error, deferred){
+    var immediatelyReject = function(error){
+        if (error == undefined){
+            error = PASS;
+        }
+        
+        var deferred = next.slice(1, next.length);
 
         return new PrivatePromise(function(res, rej){
             try {
                 rej(error(getReason()));
             } catch (err){
-                if (!deferred || deferred.length == 0){
+                if (deferred.length == 0){
                     throw err;
                 } else {
                     rej(PASS(err));   
@@ -135,11 +145,10 @@ var PrivatePromise = function(executor, nextProm, resolveMaxTimes){
 
         if (next.length > 0){
             var toDo = next[0];
-            var deferred = next.slice(1, next.length);
             if (toDo.onSuccess === toDo.onError){
                 toDo.onError = PASS;
             }
-            return immediatelyFulfill(toDo.onSuccess, toDo.onError, deferred);   
+            return immediatelyFulfill(toDo.onSuccess, toDo.onError);   
         }
     }
 
@@ -158,8 +167,7 @@ var PrivatePromise = function(executor, nextProm, resolveMaxTimes){
 
         if (next.length > 0){
             var toDo = next[0];
-            var deferred = next.slice(1, next.length);
-            return immediatelyReject(toDo.onError, deferred);
+            return immediatelyReject(toDo.onError);
         }
     }
 
