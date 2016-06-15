@@ -78,12 +78,13 @@ var PrivatePromise = function(executor, nextProm, resolveMaxTimes){
         return PROMISE_STATUS[promiseStatusIndex];
     }
 
-    var immediatelyFulfill = function(success, error){        
-        var deferred = next.slice(1, next.length);
+    var getDeferredPromises = function(){
+        next.shift();
+        return next;
+    }
 
-        if (error == undefined){
-            error = PASS;
-        }
+    var immediatelyFulfill = function(success, error){        
+        var deferred = getDeferredPromises();
 
         return new PrivatePromise(function(res, rej){
             try {
@@ -103,11 +104,7 @@ var PrivatePromise = function(executor, nextProm, resolveMaxTimes){
     }
 
     var immediatelyReject = function(error){
-        if (error == undefined){
-            error = PASS;
-        }
-        
-        var deferred = next.slice(1, next.length);
+        var deferred = getDeferredPromises(); 
 
         return new PrivatePromise(function(res, rej){
             try {
@@ -130,16 +127,10 @@ var PrivatePromise = function(executor, nextProm, resolveMaxTimes){
     * @param {any} value to which the current PromiseLite instance is resolved
     */
     this.resolve = function(value){
-        if (promiseStatusIndex === 2){
+        if (promiseInstance.isSettled()){
             return promiseInstance;
         }
 
-        var maxTimesResolvedReached = !!maxTimesResolved && (timesResolved >= maxTimesResolved);
-        if (promiseStatusIndex === 1 && maxTimesResolvedReached){
-            return promiseInstance;
-        }
-
-        timesResolved += 1;
         promiseStatusIndex = 1;
         promiseValue = value;
 
@@ -159,9 +150,10 @@ var PrivatePromise = function(executor, nextProm, resolveMaxTimes){
     * @param {any} reason the reason of the rejection
     */
     this.reject = function(reason){
-        if (promiseStatusIndex === 2){
+        if (promiseInstance.isRejected()){
             return promiseInstance;
         }
+
         promiseStatusIndex = 2;
         promiseReason = reason;
 
@@ -242,8 +234,8 @@ var PrivatePromise = function(executor, nextProm, resolveMaxTimes){
 * @param {number} [resolveMaxTimes=1] max number of times this promise can be resolved 
     (accepts <i>Infinity</i> for promises that can be resolved an unlimited number of times)
 */
-var PublicPromise = function(executor, resolveMaxTimes){
-    return new PrivatePromise(executor, undefined, resolveMaxTimes);
+var PublicPromise = function(executor){
+    return new PrivatePromise(executor, undefined);
 }
 
 

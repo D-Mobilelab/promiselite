@@ -591,31 +591,6 @@ var runTests = function(PromiseLite, who){
 		
 	});
 
-describe(who + ': updatable promises', function(){
-
-		it(who + ': should be resolved N times, given N in the constructor', function(){
-			
-			var resolveCount = 0;
-
-			var p1 = new PromiseLite(undefined, 3);
-			
-			p1.then(function(){
-				resolveCount++;
-			});
-
-			p1.resolve();
-			expect(resolveCount).toEqual(1);
-			p1.resolve();
-			expect(resolveCount).toEqual(2);
-			p1.resolve();
-			expect(resolveCount).toEqual(3);
-			p1.resolve();
-			expect(resolveCount).toEqual(3);
-
-		});
-		
-	});
-
 }
 
 module.exports = runTests;
