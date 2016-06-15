@@ -9,7 +9,7 @@ var PASS = function(arg){
     return arg;
 }
 
-var PrivatePromise = function(executor, nextProm, resolveMaxTimes){
+var PrivatePromise = function(executor, nextProm){
 
     // executor called at the end of the definition of Promise
     if (typeof executor !== 'undefined' && typeof executor !== 'function'){
@@ -20,8 +20,6 @@ var PrivatePromise = function(executor, nextProm, resolveMaxTimes){
     var promiseStatusIndex = 0;
     var promiseValue;
     var promiseReason;
-    var maxTimesResolved = resolveMaxTimes || 1;
-    var timesResolved = 0;
     var next = nextProm || [];
 
     var getValue = function(){
@@ -230,8 +228,6 @@ var PrivatePromise = function(executor, nextProm, resolveMaxTimes){
 * PromiseLite public constructor
 * @class PromiseLite
 * @param {function(resolve, reject)} [executor] the executor of this promise
-* @param {number} [resolveMaxTimes=1] max number of times this promise can be resolved 
-    (accepts <i>Infinity</i> for promises that can be resolved an unlimited number of times)
 */
 var PublicPromise = function(executor){
     return new PrivatePromise(executor, undefined);

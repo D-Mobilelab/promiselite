@@ -163,14 +163,3 @@ var p3 = new PromiseLite();
 var pAny = new PromiseLite.any([p1, p2, p3]);
 
 ```
-
-## Updatable promises
-
-
-*PromiseLite* can be instantiated with a parameter *resolveMaxTimes* that specifies the max number of times that promise can be resolved.
-
-* if left undefined, it will assume default value 1
-
-* if a promise must be resolvable an unlimited number of times, use *Infinity* as a value for *resolveMaxTimes*
-
-After a promise has been resolved the specified number of times, calling *resolve* will have no effect. It is possible to reject a promise just one time.
