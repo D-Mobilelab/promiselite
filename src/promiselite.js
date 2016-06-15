@@ -76,8 +76,9 @@ var PrivatePromise = function(executor, nextProm){
     }
 
     var getDeferredPromises = function(){
+        var toReturn = next.slice(1, next.length);
         next.shift();
-        return next;
+        return toReturn;
     }
 
     var immediatelyFulfill = function(success, error){        
@@ -93,7 +94,7 @@ var PrivatePromise = function(executor, nextProm){
                 if (error == PASS && deferred.length == 0){
                     throw err;
                 } else {
-                    rej(error(err));   
+                    rej(error(err));
                 }
             }
         }, deferred);
@@ -105,12 +106,18 @@ var PrivatePromise = function(executor, nextProm){
 
         return new PrivatePromise(function(res, rej){
             try {
-                rej(error(getReason()));
+
+                if (error == PASS && deferred.length == 0){
+                    throw getReason();
+                } else {
+                    rej(error(getReason()));
+                }
             } catch (err){
+
                 if (deferred.length == 0){
                     throw err;
                 } else {
-                    rej(PASS(err));   
+                    rej(PASS(err));
                 }
             }
         }, deferred);
@@ -162,14 +169,6 @@ var PrivatePromise = function(executor, nextProm){
 
     var addNext = function(onSuccess, onError){
 
-        if (typeof onError === 'undefined'){
-            onError = PASS;
-        }
-
-        if (typeof onSuccess === 'undefined'){
-            onSuccess = PASS;
-        }
-
         next.push({
             onSuccess: onSuccess,
             onError: onError
@@ -184,6 +183,14 @@ var PrivatePromise = function(executor, nextProm){
     * @param {function} onError function that will be executed if the PromiseLite is rejected
     */
     this.then = function(onSuccess, onError){
+        if (typeof onError === 'undefined'){
+            onError = PASS;
+        }
+
+        if (typeof onSuccess === 'undefined'){
+            onSuccess = PASS;
+        }
+
         if (promiseInstance.isPending()){
             addNext(onSuccess, onError);
             return promiseInstance;
