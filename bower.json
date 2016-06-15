@@ -1,0 +1,32 @@
+{
+  "name": "promiselite",
+  "version": "1.2.2",
+  "authors": [
+    "fabio.fognani@buongiorno.com"
+  ],
+  "description": "A light, browser-friendly implementation of JavaScript Promises",
+  "main": [
+    "dist/promiselite.js"
+  ],
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "lite",
+    "light",
+    "browser",
+    "support",
+    "promise",
+    "javascript"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/*",
+    "!dist/**/*",
+    "!src/**/*",
+    "!README.md",
+    "!bower.json"
+  ],
+  "dependencies": {},
+  "devDependencies": {}
+}
