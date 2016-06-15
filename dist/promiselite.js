@@ -77,29 +77,33 @@ var PrivatePromise = function(executor, nextProm){
     }
 
     var getDeferredPromises = function(){
-        console.log("next", next);
         var toReturn = next.slice(1, next.length);
         next.shift();
-        console.log("deferred", next);
         return toReturn;
     }
 
-    var immediatelyFulfill = function(success, error){        
+    var immediatelyFulfill = function(success, error){       
+
+        if (typeof success === 'undefined'){
+            success = PASS;
+        }
+
+        if (typeof error === 'undefined'){
+            error = PASS;
+        }
+
         var deferred = getDeferredPromises();
 
         return new PrivatePromise(function(res, rej){
             try {
                 res(success(getValue()));
             } catch (err){
-                console.log("error during fulfill", err, deferred);
                 // if we're trying to pass the error to the next node of the chain
                 // but the next node of the chain is undefined
                 // throw error, otherwise pass it forward through the chain
                 if (error == PASS && deferred.length == 0){
-                    console.log('here', error, deferred);
                     throw err;
                 } else {
-                    console.log("handling", error, deferred);
                     rej(error(err));
                 }
             }
@@ -108,11 +112,14 @@ var PrivatePromise = function(executor, nextProm){
     }
 
     var immediatelyReject = function(error){
+        if (typeof error === 'undefined'){
+            error = PASS;
+        }
+
         var deferred = getDeferredPromises(); 
 
         return new PrivatePromise(function(res, rej){
             try {
-                console.log("ciaone", error, deferred);
                 if (error == PASS && deferred.length == 0){
                     throw getReason();
                 } else {
@@ -120,12 +127,9 @@ var PrivatePromise = function(executor, nextProm){
                 }
             } catch (err){
 
-                console.log("error during reject", err, deferred);
                 if (deferred.length == 0){
-                    console.log("no more");
                     throw err;
                 } else {
-                    console.log("passing", err, deferred);
                     rej(PASS(err));
                 }
             }
@@ -152,7 +156,6 @@ var PrivatePromise = function(executor, nextProm){
             if (toDo.onSuccess === toDo.onError){
                 toDo.onError = PASS;
             }
-            console.log("immediatelyFulfill", toDo)
             return immediatelyFulfill(toDo.onSuccess, toDo.onError);   
         }
     }
@@ -173,7 +176,6 @@ var PrivatePromise = function(executor, nextProm){
 
         if (next.length > 0){
             var toDo = next[0];
-            console.log("immediatelyReject", toDo)
             return immediatelyReject(toDo.onError);
         }
     }
@@ -194,27 +196,17 @@ var PrivatePromise = function(executor, nextProm){
     * @param {function} onError function that will be executed if the PromiseLite is rejected
     */
     this.then = function(onSuccess, onError){
-        if (typeof onError === 'undefined'){
-            console.log("setting default onError");
-            onError = PASS;
-        }
-
-        if (typeof onSuccess === 'undefined'){
-            console.log("setting default onSuccess");
-            onSuccess = PASS;
-        }
 
         if (promiseInstance.isPending()){
-            console.log("adding next", onSuccess, onError);
             addNext(onSuccess, onError);
             return promiseInstance;
         }
 
-        if (promiseInstance.isFulfilled()){
+        if (promiseInstance.isFulfilled() && !!onSuccess){
             return immediatelyFulfill(onSuccess, onError);
         }
 
-        if (promiseInstance.isRejected()){
+        if (promiseInstance.isRejected() && !!onError){
             return immediatelyReject(onError);
         }
     }

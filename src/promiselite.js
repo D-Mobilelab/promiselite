@@ -81,7 +81,16 @@ var PrivatePromise = function(executor, nextProm){
         return toReturn;
     }
 
-    var immediatelyFulfill = function(success, error){        
+    var immediatelyFulfill = function(success, error){       
+
+        if (typeof success === 'undefined'){
+            success = PASS;
+        }
+
+        if (typeof error === 'undefined'){
+            error = PASS;
+        }
+
         var deferred = getDeferredPromises();
 
         return new PrivatePromise(function(res, rej){
@@ -102,11 +111,14 @@ var PrivatePromise = function(executor, nextProm){
     }
 
     var immediatelyReject = function(error){
+        if (typeof error === 'undefined'){
+            error = PASS;
+        }
+
         var deferred = getDeferredPromises(); 
 
         return new PrivatePromise(function(res, rej){
             try {
-
                 if (error == PASS && deferred.length == 0){
                     throw getReason();
                 } else {
@@ -183,24 +195,17 @@ var PrivatePromise = function(executor, nextProm){
     * @param {function} onError function that will be executed if the PromiseLite is rejected
     */
     this.then = function(onSuccess, onError){
-        if (typeof onError === 'undefined'){
-            onError = PASS;
-        }
-
-        if (typeof onSuccess === 'undefined'){
-            onSuccess = PASS;
-        }
 
         if (promiseInstance.isPending()){
             addNext(onSuccess, onError);
             return promiseInstance;
         }
 
-        if (promiseInstance.isFulfilled()){
+        if (promiseInstance.isFulfilled() && !!onSuccess){
             return immediatelyFulfill(onSuccess, onError);
         }
 
-        if (promiseInstance.isRejected()){
+        if (promiseInstance.isRejected() && !!onError){
             return immediatelyReject(onError);
         }
     }
