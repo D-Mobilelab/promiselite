@@ -1,0 +1,51 @@
+{
+	"extends": [
+		"airbnb"
+	],
+	"rules": {
+		/*** SYANTAX ***/
+		// you can use unamed functions ( this.init = function(options){..} )
+		"func-names": 0,
+		// error if trailing comma is present ( [1,2,] )
+		"comma-dangle": [2, "never"],
+		// warning if you use "for in" loop and include prototype properties of object
+		"guard-for-in": 1,
+		// strict mode in global mode
+		"strict": [1, "global"],
+
+		/*** VARIABLES ***/
+		// you can declare variables in more lines
+		"one-var": 0,
+		// you can use "var", not only "let" or "const"
+		"no-var": 0,
+		// warning if global variable, not defined before, is used
+		"no-undef": 1,
+		// warning if you don't use "const" for a variable never modified
+		"prefer-const": 1,
+		// warning if you declare a variable not at the top of a function scope
+		"vars-on-top": 1,
+		// you can re-assign a function parameter ( function(b){ b++; } )
+		"no-param-reassign": 1,
+		// you can use "else" after a return
+		"no-else-return": 0,
+		// warning if define a variable but don't use it
+		"no-unused-vars": 1,
+
+		/*** SPACES ***/
+		// indent 4 spaces
+		"indent": [2, 4],
+		// a void line at end of file is not necessary
+		"eol-last": 0,
+		// space before blocks is not necessary ( if()*{ )
+		"space-before-blocks": 0,
+		// space after keywords is not necessary ( if*(){ )
+		"space-after-keywords": 0,
+		// space before function parentheses is not necessary ( function*(){ )
+		"space-before-function-paren": 0,
+		// trailing-space at end of line is allowed ( window.alert();* )
+		"no-trailing-spaces": 0,
+		// blocks could be padded by blank lines
+		"padded-blocks": [0, "never"],
+		"no-use-before-define": 0
+	}
+}

@@ -30,48 +30,18 @@ var PrivatePromise = function(executor, nextProm){
     var getReason = function(){
         return promiseReason;
     }
-
-    /**
-    * Returns whether the current PromiseLite instance is in a "pending" state
-    * @function isPending
-    * @memberof PromiseLite#
-    */
     this.isPending = function(){
         return promiseStatusIndex === 0;
     }
-
-    /**
-    * Returns whether the current PromiseLite instance is in a "fulfilled" state
-    * @function isFulfilled
-    * @memberof PromiseLite#
-    */
     this.isFulfilled = function(){
         return promiseStatusIndex === 1;
     }
-
-    /**
-    * Returns whether the current PromiseLite instance is in a "rejected" state
-    * @function isRejected
-    * @memberof PromiseLite#
-    */
     this.isRejected = function(){
         return promiseStatusIndex === 2;
     }
-
-    /**
-    * Returns whether the current PromiseLite instance is in a "settled" state (fulfilled or rejected)
-    * @function isSettled
-    * @memberof PromiseLite#
-    */
     this.isSettled = function(){
         return (promiseStatusIndex === 1) || (promiseStatusIndex === 2);
     }
-
-    /**
-    * Returns the state of the current PromiseLite instance as a string
-    * @function getStatus
-    * @memberof PromiseLite#
-    */
     this.getStatus = function(){
         return PROMISE_STATUS[promiseStatusIndex];
     }
@@ -136,13 +106,6 @@ var PrivatePromise = function(executor, nextProm){
         }, deferred);
         
     }
-
-    /**
-    * Resolves the current PromiseLite instance
-    * @function resolve
-    * @memberof PromiseLite#
-    * @param {any} value to which the current PromiseLite instance is resolved
-    */
     this.resolve = function(value){
         if (promiseInstance.isSettled()){
             return promiseInstance;
@@ -159,13 +122,6 @@ var PrivatePromise = function(executor, nextProm){
             return immediatelyFulfill(toDo.onSuccess, toDo.onError);   
         }
     }
-
-    /**
-    * Rejects the current PromiseLite instance
-    * @function reject
-    * @memberof PromiseLite#
-    * @param {any} reason the reason of the rejection
-    */
     this.reject = function(reason){
         if (promiseInstance.isRejected()){
             return promiseInstance;
@@ -187,14 +143,6 @@ var PrivatePromise = function(executor, nextProm){
             onError: onError
         });
     }
-
-    /**
-    * Adds a then block to the current PromiseLite instance
-    * @function then
-    * @memberof PromiseLite#
-    * @param {function} onSuccess function that will be executed if the PromiseLite is resolved
-    * @param {function} onError function that will be executed if the PromiseLite is rejected
-    */
     this.then = function(onSuccess, onError){
 
         if (promiseInstance.isPending()){
@@ -210,23 +158,9 @@ var PrivatePromise = function(executor, nextProm){
             return immediatelyReject(onError);
         }
     }
-
-    /**
-    * Adds a fail (catch) block to the current PromiseLite instance
-    * @function fail
-    * @memberof PromiseLite#
-    * @param {function} onError function that will be executed if the PromiseLite is rejected
-    */
     this.fail = function(onError){
         return promiseInstance.then(undefined, onError);
     }
-
-    /**
-    * Adds a force (finally) block to the current PromiseLite instance
-    * @function force
-    * @memberof PromiseLite#
-    * @param {function} callback function that will be executed both if the PromiseLite is resolved or rejected
-    */
     this.force = function(callback){
         return promiseInstance.then(callback, callback);
     }
@@ -236,24 +170,9 @@ var PrivatePromise = function(executor, nextProm){
     }
 
 }
-
-/**
-* PromiseLite public constructor
-* @class PromiseLite
-* @param {function(resolve, reject)} [executor] the executor of this promise
-*/
 var PublicPromise = function(executor){
     return new PrivatePromise(executor, undefined);
 }
-
-
-/**
-* Returns a promise that takes an array of promises as argument and 
-* is fulfilled if and only if all of these are fulfilled 
-* @function all
-* @memberof PromiseLite
-* @param {Array} promiseList a list of PromiseLite instances
-*/
 PublicPromise.all = function(promiseList){
     var promiseAll = new PublicPromise();
     var promiseCount = promiseList.length;
@@ -297,14 +216,6 @@ PublicPromise.all = function(promiseList){
 
     return promiseAll;
 }
-
-/**
-* Returns a promise that takes an array of promises as argument and 
-* is fulfilled if and only if the first of them that is settled is fulfilled (rejected otherwise) 
-* @function race
-* @memberof PromiseLite
-* @param {Array} promiseList a list of PromiseLite instances
-*/
 PublicPromise.race = function(promiseList){
     var promiseRace = new PublicPromise();
     var promiseCount = promiseList.length;
@@ -328,14 +239,6 @@ PublicPromise.race = function(promiseList){
 
     return promiseRace;
 }
-
-/**
-* Returns a promise that takes an array of promises as argument and 
-* is fulfilled if at least one of them is fulfilled (rejected otherwise)
-* @function any
-* @memberof PromiseLite
-* @param {Array} promiseList a list of PromiseLite instances
-*/
 PublicPromise.any = function(promiseList){
     var promiseAny = new PublicPromise();
     var promiseCount = promiseList.length;

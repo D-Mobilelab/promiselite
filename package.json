@@ -2,22 +2,6 @@
   "name": "promiselite",
   "version": "1.2.2",
   "description": "A light, browser-friendly implementation of JavaScript Promises",
-  "main": "promise.js",
-  "directories": {
-    "test": "test"
-  },
-  "scripts": {
-    "docs": "rm out -rf && node_modules/.bin/jsdoc src/promiselite.js -d docs",
-    "build:no:min": "mkdir -p dist && browserify src/promiselite.js -o dist/promiselite.js -s PromiseLite",
-    "build:min": "browserify src/promiselite.js -s PromiseLite | uglifyjs -c --mangle > dist/promiselite.min.js",
-    "build": "npm run docs && npm run build:no:min && npm run build:min",
-    "test:develop": "karma start",
-    "test": "npm run build && karma start --no-auto-watch --browsers PhantomJS --single-run"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:D-Mobilelab/promiselite.git"
-  },
   "keywords": [
     "lite",
     "light",
@@ -26,34 +10,63 @@
     "promise",
     "javascript"
   ],
-  "author": "Fabio Fognani",
+  "homepage": "https://github.com/D-Mobilelab/promiselite",
+  "bugs": {
+    "url": "https://github.com/D-Mobilelab/promiselite/issues"
+  },
   "license": "MIT",
+  "contributors": [{
+      "name": "Fabio Fognani",
+      "email": "fabio.fognani@buongiorno.com"
+  }],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/D-Mobilelab/promiselite.git"
+  },
+  "scripts": {},
+  "dependencies": {},
   "devDependencies": {
-    "browserify": "^13.0.0",
+    "babel-eslint": "^4.1.4",
+    "browserify": "^13.0.1",
     "browserify-istanbul": "^2.0.0",
-    "catharsis": "^0.8.7",
+    "coveralls": "^2.11.9",
+    "eslint-config-airbnb": "^0.1.0",
+    "eslint-plugin-react": "^5.1.1",
+    "grunt": "^0.4.5",
+    "grunt-contrib-clean": "^0.7.0",
+    "grunt-contrib-connect": "^0.10.1",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-coveralls": "^1.0.0",
+    "grunt-eslint": "^17.3.1",
+    "grunt-file-append": "0.0.6",
+    "grunt-karma": "^0.12.1",
+    "grunt-ngdocs": "^0.2.5",
+    "grunt-open": "^0.2.3",
+    "grunt-prompt": "^1.3.3",
+    "grunt-serve": "^0.1.6",
+    "grunt-shell": "^1.3.0",
+    "grunt-string-replace": "^1.2.1",
+    "grunt-stripcomments": "^0.5.0",
     "istanbul": "^0.4.3",
-    "jasmine-ajax": "^3.2.0",
-    "jasmine-core": "^2.4.1",
-    "jsdoc": "^3.2.2",
-    "karma": "^0.13.22",
-    "karma-browserify": "^4.4.2",
-    "karma-chrome-launcher": "^0.2.1",
-    "karma-cli": "^0.1.2",
-    "karma-commonjs": "0.0.13",
-    "karma-coverage": "^0.5.5",
-    "karma-firefox-launcher": "^0.1.6",
-    "karma-growl-reporter": "^0.1.1",
-    "karma-html-reporter": "^0.2.7",
-    "karma-jasmine": "^0.3.8",
-    "karma-mocha-reporter": "^1.1.3",
-    "karma-phantomjs-launcher": "^0.2.3",
-    "karma-spec-reporter": "0.0.22",
-    "phantomjs": "^2.1.7",
-    "phantomjs-polyfill": "0.0.1",
-    "phantomjs-prebuilt": "^2.1.7",
-    "taffydb": "^2.7.2",
-    "uglify-js": "^2.6.2",
+    "jasmine-core": "^2.3.4",
+    "karma": "^0.13.15",
+    "karma-browserify": "^5.0.5",
+    "karma-coverage": "^0.5.3",
+    "karma-coveralls": "^1.1.2",
+    "karma-jasmine": "^0.3.6",
+    "karma-mocha-reporter": "^2.0.3",
+    "karma-phantomjs-launcher": "^0.2.1",
+    "load-grunt-tasks": "^3.2.0",
+    "phantomjs": "^1.9.18",
     "watchify": "^3.7.0"
+  },
+  "engines": {
+    "node": "0.10.25"
+  },
+  "private": false,
+  "browserify": {
+    "src": "promiselite.js",
+    "dist": "promiselite.js",
+    "global": "PromiseLite"
   }
 }

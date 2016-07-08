@@ -1,15 +1,20 @@
 {
   "name": "promiselite",
-  "version": "1.2.2",
-  "authors": [
-    "fabio.fognani@buongiorno.com"
-  ],
   "description": "A light, browser-friendly implementation of JavaScript Promises",
   "main": [
     "dist/promiselite.js"
   ],
   "moduleType": [
     "globals"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/*",
+    "!dist/**/*",
+    "!src/**/*",
+    "!CHANGELOG",
+    "!README.md",
+    "!bower.json"
   ],
   "keywords": [
     "lite",
@@ -19,14 +24,16 @@
     "promise",
     "javascript"
   ],
-  "license": "MIT",
-  "ignore": [
-    "**/*",
-    "!dist/**/*",
-    "!src/**/*",
-    "!README.md",
-    "!bower.json"
-  ],
+  "authors": [{
+      "name": "Fabio Fognani",
+      "email": "fabio.fognani@buongiorno.com"
+  }],
+  "homepage": "https://github.com/D-Mobilelab/promiselite",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/D-Mobilelab/promiselite.git"
+  },
   "dependencies": {},
-  "devDependencies": {}
+  "devDependencies": {},
+  "private": false
 }
