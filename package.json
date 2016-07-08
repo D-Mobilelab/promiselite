@@ -23,6 +23,7 @@
     "type": "git",
     "url": "git://github.com/D-Mobilelab/promiselite.git"
   },
+  "main":"src/promiselite.js",
   "scripts": {},
   "dependencies": {},
   "devDependencies": {
