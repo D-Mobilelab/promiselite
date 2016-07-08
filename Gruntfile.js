@@ -226,7 +226,14 @@ module.exports = function (grunt) {
             options: {
                 stderr: false
             },
-            browserify: 'node node_modules/browserify/bin/cmd.js <%= srcPath %><%= brify.src %> -o <%= distPath %><%= brify.dist %> -s <%= brify.global %>'
+            browserify: 'node node_modules/browserify/bin/cmd.js <%= srcPath %><%= brify.src %> -o <%= distPath %><%= brify.dist %> -s <%= brify.global %>',
+            add_docs: 'git add <%= docPath %>',
+            commit_version: 'git commit -a -m "Version <%= newVersion %>"',
+            add_tag: 'git tag <%= newVersion %>',
+            push_version: 'git push origin master',
+            push_tag: 'git push origin --tags',
+            push_docs: 'git subtree push --prefix docs origin gh-pages',
+            npm_publish: 'npm publish'
         },
 
         // STRIP COMMENTS
@@ -238,20 +245,6 @@ module.exports = function (grunt) {
                 },
                 src: '<%= distPath %>*.js'
             },
-        },
-
-        // SHELL
-        shell: {
-            options: {
-                stderr: false
-            },
-            add_docs: 'git add <%= docPath %>',
-            commit_version: 'git commit -a -m "Version <%= newVersion %>"',
-            add_tag: 'git tag <%= newVersion %>',
-            push_version: 'git push origin master',
-            push_tag: 'git push origin --tags',
-            push_docs: 'git subtree push --prefix docs origin gh-pages',
-            npm_publish: 'npm publish'
         }
     });
 
