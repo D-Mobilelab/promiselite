@@ -1,3 +1,6 @@
+** 1.3.1 **
+- require is just promise lite
+
 ** 1.3.0 **
 - Integrated Grunt, travis and coveralls
 
