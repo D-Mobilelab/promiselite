@@ -359,7 +359,7 @@ module.exports = function (grunt) {
         'file_append:changelog',
         // DOC (OFFICIAL)
         'clean:docVersion',
-        'ngdocs:version'
+        'ngdocs:version',
         // SHELL
         'shell:add_docs',
         'shell:commit_version',
