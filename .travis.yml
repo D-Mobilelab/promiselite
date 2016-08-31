@@ -8,7 +8,9 @@ branches:
    - master
 
 before_install:
-  - npm install -g bower grunt npm@3
+  - npm install -g bower 
+  - npm install -g grunt
+  - npm install -g npm@3
   - npm -v
   - node -v
 
