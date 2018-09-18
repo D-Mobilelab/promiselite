@@ -4,7 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/D-Mobilelab/promiselite/badge.svg?branch=master&v=1)](https://coveralls.io/github/D-Mobilelab/promiselite?branch=master)
 [![npm version](https://badge.fury.io/js/promiselite.svg)](https://badge.fury.io/js/promiselite)
 [![Bower version](https://badge.fury.io/bo/promiselite.svg)](https://badge.fury.io/bo/promiselite)
-[![GitHub version](https://badge.fury.io/gh/D-Mobilelab%2Fpromiselite.svg?v=1)](https://badge.fury.io/gh/D-Mobilelab%2Fpromiselite)
+[![GitHub version](https://badge.fury.io/gh/D-Mobilelab%2Fpromiselite.svg?v=1)](https://badge.fury.io/gh/D-Mobilelab%2Fpromiselite) [![Greenkeeper badge](https://badges.greenkeeper.io/D-Mobilelab/promiselite.svg)](https://greenkeeper.io/)
 
 *PromiseLite* is a light, browser-friendly implementation of JavaScript promises. 
 
