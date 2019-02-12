@@ -1,5 +1,7 @@
 # promiselite
 
+## [!!!] This repository has been deprecated, we suggest to use [https://github.com/taylorhakes/promise-polyfill](https://github.com/taylorhakes/promise-polyfill) instead
+
 [![Build Status](https://travis-ci.org/D-Mobilelab/promiselite.svg?branch=master&v=1)](https://travis-ci.org/D-Mobilelab/promiselite)
 [![Coverage Status](https://coveralls.io/repos/github/D-Mobilelab/promiselite/badge.svg?branch=master&v=1)](https://coveralls.io/github/D-Mobilelab/promiselite?branch=master)
 [![npm version](https://badge.fury.io/js/promiselite.svg)](https://badge.fury.io/js/promiselite)
